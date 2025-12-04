@@ -1,0 +1,138 @@
+<!-- /assets-page/menu.html -->
+<style>
+    /* MENU STYLES (same as before) */
+  
+    .menu-button {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      border: 2px solid#F4B728;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.7);
+      z-index: 1100;
+    }
+  
+    .menu-button img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
+  
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: flex-end;
+      z-index: 1200;
+    }
+  
+    .sidebar-overlay.active {
+      display: flex;
+    }
+  
+    .sidebar {
+      width: 260px;
+      max-width: 80vw;
+      background: rgba(10, 10, 10, 0.95);
+      box-shadow: -4px 0 16px rgba(0, 0, 0, 0.8);
+      border-left: 2px solid #f4b7286c;
+      padding: 1.5rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      animation: slideIn 0.25s ease-out;
+    }
+  
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0%);
+        opacity: 1;
+      }
+    }
+  
+    .sidebar-title {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px #000;
+      color: #F4B728;
+      text-align: center;
+    }
+  
+    .sidebar-close {
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-left: auto;
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+  
+    .sidebar-menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  
+    .sidebar-menu a {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.7rem;
+      border-radius: 999px;
+      border: 2px solid #F4B728;
+      background: rgba(40, 40, 40, 0.9);
+      color: #fff;
+      cursor: pointer;
+      text-shadow: 1px 1px 2px #000;
+      letter-spacing: 0.08em;
+      transition: transform 0.1s ease, box-shadow 0.1s ease,
+        background 0.1s ease;
+      text-decoration: none;
+    }
+  
+    .sidebar-menu a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 12px #F4B728;
+      background: rgba(60, 60, 60, 0.9);
+    }
+  </style>
+  
+  <!-- MENU MARKUP -->
+  <button id="menuButton" class="menu-button" aria-label="Open menu">
+    <img src="/assets/menu.png" alt="Menu" />
+  </button>
+  
+  <div id="sidebarOverlay" class="sidebar-overlay">
+    <div class="sidebar">
+      <div id="sidebarClose" class="sidebar-close">X</div>
+      <div class="sidebar-title">ZORD MENU</div>
+      <ul class="sidebar-menu">
+        <li><a href="/assets-page/info.html">INFO</a></li>
+        <li><a href="/assets-page/znode-status.html">ZNODE STATUS</a></li>
+        <li><a href="/assets-page/dev-cli.html">CLI CONTROLS</a></li>
+        <li><a href="/assets-page/index.html">ZORDINALS VIEWER</a></li>
+        <li><a href="/assets-page/explore.html">EXPLORE ZORDS</a></li>
+        <li><a href="/assets-page/meta.html">METADATA TOOLS</a></li>
+        <li><a href="/assets-page/define.html">DEFINE TRAITS</a></li>
+        <li><a href="/assets-page/zordinals-theory.html">ZORDINALTHEORY</a></li>
+        <li><a href="https://zord.cash" target="_blank">ZORD.CASH</a></li>
+        <li><a href="https://x.com/Zordtoshi" target="_blank">ZORDTOSHI X</a></li>
+        <li><a href="https://github.com/Zordtoshi" target="_blank">GITHUB</a></li>
+      </ul>
+    </div>
+  </div>
+  

@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>ZORDINAL METADATA CREATOR</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Press Start 2P', cursive;
+        background-image: url('/assets/bg.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #fff;
+      }
+
+      .app-container {
+        width: 100%;
+        max-width: 1200px;
+        border: 1px solid #F4B728;
+        border-radius: 16px;
+      }
+
+      .content-card {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.85);
+        border: 2px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.4rem;
+        margin-bottom: 1rem;
+      }
+
+      .round-logo {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background-color: rgba(255, 215, 0, 0.2);
+        border: 4px solid #F4B728;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .round-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+      .hero-subtitle-small {
+        font-size: 0.6rem;
+        text-shadow: 2px 2px 4px #111;
+        letter-spacing: 0.08em;
+      }
+
+      .main-title {
+        font-size: 1rem;
+        text-shadow: 4px 4px 8px #111;
+        letter-spacing: 0.1em;
+        color: #F4B728;
+      }
+
+      .hero-subtitle-main {
+        font-size: 0.65rem;
+        opacity: 0.9;
+      }
+
+      .panel {
+        background: rgba(0, 0, 0, 0.85);
+        border-radius: 12px;
+        border: 1px solid #F4B728;
+        padding: 0.8rem 0.9rem;
+        font-size: 0.6rem;
+      }
+
+      .panel-title {
+        font-size: 0.7rem;
+        margin-bottom: 0.4rem;
+        text-shadow: 2px 2px 4px #000;
+        color: #F4B728;
+      }
+
+      .panel-desc {
+        font-size: 0.55rem;
+        margin-bottom: 0.4rem;
+        opacity: 0.9;
+      }
+
+      .cmd-btn {
+        padding: 0.3rem 0.55rem;
+        border-radius: 999px;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        background: rgba(15, 15, 15, 0.95);
+        color: #fff;
+        font-size: 0.65rem;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        text-shadow: 1px 1px 2px #000;
+        transition: transform 0.1s ease, box-shadow 0.1s ease,
+          background 0.1s ease;
+        border-color: #F4B728;
+      }
+
+      .cmd-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 10px #F4B728;
+        background: rgba(30, 30, 30, 0.95);
+      }
+
+      .footer {
+        margin-top: 1.2rem;
+        font-size: 0.55rem;
+        text-align: center;
+        opacity: 0.85;
+      }
+
+      /* MENU BUTTON */
+
+      .menu-button {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 2px solid #fff;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.7);
+        z-index: 1100;
+      }
+
+      .menu-button img {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+      }
+
+      .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: flex-end;
+        z-index: 1200;
+      }
+
+      .sidebar-overlay.active {
+        display: flex;
+      }
+
+      /* MODAL */
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1300;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+      }
+
+      .modal {
+        width: 100%;
+        max-width: 600px;
+        background: rgba(0, 0, 0, 0.96);
+        border-radius: 16px;
+        border: 1px solid #F4B728;
+        padding: 1rem 1.2rem;
+        box-shadow: 0 0 24px rgba(0, 0, 0, 0.9);
+        font-size: 0.6rem;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.55rem;
+      }
+
+      .modal-title {
+        font-size: 0.7rem;
+        color: #F4B728;
+      }
+
+      .modal-close {
+        cursor: pointer;
+        font-size: 0.7rem;
+        opacity: 0.8;
+      }
+
+      .modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+      }
+
+      .modal-label {
+        font-size: 0.55rem;
+        margin-bottom: 0.15rem;
+        color: #F4B728;
+      }
+
+      .modal-input,
+      .modal-textarea,
+      .modal-select {
+        width: 100%;
+        padding: 0.4rem 0.5rem;
+        border-radius: 999px;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        background: rgba(0, 0, 0, 0.9);
+        color: #fff;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 0.55rem;
+        outline: none;
+      }
+
+      .modal-textarea {
+        border-radius: 10px;
+        min-height: 200px;
+        resize: vertical;
+      }
+
+      .modal-footer {
+        margin-top: 0.6rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .modal-desc {
+        font-size: 0.55rem;
+        opacity: 0.9;
+      }
+
+      .modal-status {
+        font-size: 0.53rem;
+        min-height: 0.8rem;
+      }
+
+      .modal-status.error {
+        color: #ff6b6b;
+      }
+
+      .modal-status.ok {
+        color: #F4B728;
+      }
+
+      .response-box {
+        margin-top: 0.4rem;
+        border-radius: 10px;
+        background: #000;
+        border: 1px solid #F4B728;
+        padding: 0.4rem;
+        box-shadow: 0 0 10px #F4B728;
+      }
+
+      .response-box pre {
+        max-height: 260px;
+        overflow-y: auto;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 0.5rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+        color: #c79728;
+      }
+
+      .section-title {
+        font-size: 0.7rem;
+        color: #F4B728;
+        margin-top: 0.5rem;
+        margin-bottom: 0.4rem;
+        text-shadow: 2px 2px 4px #000;
+      }
+
+      .hint {
+        font-size: 0.52rem;
+        opacity: 0.85;
+        margin-top: 0.2rem;
+      }
+
+      .mode-toggle {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 0.6rem;
+        margin-bottom: 0.6rem;
+        justify-content: center;
+      }
+
+      .mode-btn {
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        background: rgba(15, 15, 15, 0.9);
+        color: #fff;
+        font-size: 0.6rem;
+        cursor: pointer;
+        letter-spacing: 0.08em;
+        text-shadow: 1px 1px 2px #000;
+        transition: transform 0.1s ease, box-shadow 0.1s ease,
+          background 0.1s ease;
+        border-color: #F4B728;
+      }
+
+      .mode-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 10px #F4B728;
+        background: rgba(30, 30, 30, 0.95);
+      }
+
+      .mode-btn.active {
+        background: rgba(244, 183, 40, 0.2);
+        box-shadow: 0 0 10px #F4B728;
+      }
+
+      .flex-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+      }
+
+      .input-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-bottom: 0.4rem;
+        align-items: center;
+      }
+
+      .label-inline {
+        font-size: 0.55rem;
+        margin-right: 0.3rem;
+      }
+
+      .radio-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: 0.4rem;
+        font-size: 0.55rem;
+        accent-color: #F4B728;
+      }
+
+      .radio-row label {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        cursor: pointer;
+      }
+
+      .small-input {
+        max-width: 220px;
+      }
+
+      .two-col {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-top: 0.6rem;
+      }
+
+      .two-col-pane {
+        flex: 1 1 260px;
+        background: rgba(0, 0, 0, 0.85);
+        border-radius: 12px;
+        border: 1px solid #F4B728;
+        padding: 0.6rem 0.7rem;
+        font-size: 0.55rem;
+      }
+
+      .two-col-title {
+        font-size: 0.6rem;
+        color: #F4B728;
+        margin-bottom: 0.3rem;
+      }
+
+      .image-preview-box {
+        margin-top: 0.4rem;
+        border-radius: 10px;
+        border: 1px solid #F4B728;
+        padding: 0.3rem;
+        background: rgba(0, 0, 0, 0.9);
+        min-height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .image-preview-box img {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 8px;
+        border: none;
+      }
+
+      .attr-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .attr-input {
+        flex: 1 1 0;
+        min-width: 120px;
+      }
+
+      .tiny-btn {
+        padding: 0.2rem 0.45rem;
+        font-size: 0.55rem;
+      }
+
+      .pill-inline {
+        display: inline-block;
+        padding: 0.12rem 0.4rem;
+        border-radius: 999px;
+        border: 1px solid #f4b728d0;
+        font-size: 0.5rem;
+        opacity: 0.9;
+      }
+
+      .json-box {
+        min-height: 160px;
+        max-height: 320px;
+      }
+
+      .status-inline {
+        font-size: 0.52rem;
+        margin-top: 0.2rem;
+      }
+
+      .status-inline.error {
+        color: #ff6b6b;
+      }
+
+      .status-inline.ok {
+        color: #F4B728;
+      }
+
+/* Zordinals CRT Hologram Toasts */
+.toast-stack {
+  position: fixed;
+  inset: auto 16px 16px auto;
+  z-index: 9999;
+  display: grid;
+  gap: 10px;
+  max-width: 92vw;
+  width: 420px;
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+/* Core toast container */
+.toast {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #F4B728;
+  border-radius: 12px;
+  background: radial-gradient(circle at 0% 0%, rgba(244,183,40,0.26), transparent 55%)
+              ,rgba(0, 0, 0, 0.9);
+  color: #F4B728;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.65rem;
+  text-shadow: 0 0 4px #000;
+  box-shadow:
+      0 0 18px rgba(244,183,40,0.65),
+      inset 0 0 18px rgba(244,183,40,0.18);
+  backdrop-filter: blur(2px);
+  transform-origin: center;
+  animation:
+    toast-in 160ms ease-out forwards,
+    crt-flicker 2.4s steps(60, end) infinite,
+    holo-glow 3.4s ease-in-out infinite;
+}
+
+/* CRT scanlines */
+.toast::before {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.12) 0px,
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 2px,
+    transparent 3px
+  );
+  opacity: 0.28;
+  mix-blend-mode: soft-light;
+}
+
+/* Hologram light sweep */
+.toast::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: -40%;
+  background: radial-gradient(circle at 0% 0%, rgba(244,183,40,0.35), transparent 55%);
+  opacity: 0.0;
+  mix-blend-mode: screen;
+  animation: holo-sweep 4.2s linear infinite;
+}
+
+/* Icon */
+.toast .ico {
+  font-size: 20px;
+  color: #F4B728;
+  filter: drop-shadow(0 0 6px rgba(244,183,40,0.65));
+}
+
+/* Message */
+.toast .msg {
+  color: #fff;
+  line-height: 1.4;
+  text-shadow: 0px 0px 6px #F4B728;
+}
+
+/* Close button */
+.toast .close {
+  background: rgba(0,0,0,0.6);
+  border: 2px solid #F4B728;
+  color: #fff;
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 0.55rem;
+  text-shadow: 0 0 4px #000;
+  transition: 0.15s ease;
+}
+
+.toast .close:hover {
+  background: rgba(244,183,40,0.2);
+  box-shadow: 0 0 10px #F4B728;
+}
+
+/* Variants */
+.toast.success {
+  border-color: #F4B728;
+  box-shadow:
+      0 0 18px #F4B728
+      inset 0 0 18px #c79728;
+}
+
+.toast.error {
+  border-color: #ff5c5c;
+  box-shadow:
+      0 0 18px rgba(255,92,92,0.55),
+      inset 0 0 18px rgba(255,92,92,0.22);
+}
+
+.toast.info {
+  border-color: #F4B728;
+}
+
+/* Hover: slightly stronger holo tilt */
+.toast:hover {
+  transform: perspective(600px) rotateX(2deg) translateY(-1px);
+  box-shadow:
+      0 0 22px rgba(244,183,40,0.85),
+      inset 0 0 22px rgba(244,183,40,0.24);
+}
+
+/* Animations */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: perspective(600px) translateY(6px) scale(0.97) rotateX(4deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(600px) translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+/* CRT flicker: tiny opacity and scale jitter */
+@keyframes crt-flicker {
+  0%, 96%, 100%   { opacity: 1; transform: perspective(600px) translateY(0) scale(1); }
+  5%             { opacity: 0.96; transform: perspective(600px) translateY(0.5px) scale(1.002); }
+  8%             { opacity: 0.98; transform: perspective(600px) translateY(-0.5px) scale(0.998); }
+  12%            { opacity: 0.94; transform: perspective(600px) translateY(0.4px) scale(1.003); }
+  20%            { opacity: 1; }
+  48%            { opacity: 0.97; }
+  52%            { opacity: 1; }
+  71%            { opacity: 0.93; }
+}
+
+/* Hologram subtle glow pulse */
+@keyframes holo-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 14px rgba(244,183,40,0.55),
+      inset 0 0 16px rgba(244,183,40,0.18);
+  }
+  50% {
+    box-shadow:
+      0 0 26px rgba(244,183,40,0.9),
+      inset 0 0 24px rgba(244,183,40,0.3);
+  }
+}
+
+/* Hologram sweep across top-left -> bottom-right */
+@keyframes holo-sweep {
+  0% {
+    opacity: 0;
+    transform: translate3d(-40%, -40%, 0);
+  }
+  20% {
+    opacity: 0.55;
+  }
+  60% {
+    opacity: 0;
+    transform: translate3d(40%, 40%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(40%, 40%, 0);
+  }
+}
+
+/* Optional hide animation if you programmatically add .toast-out */
+.toast.toast-out {
+  animation:
+    toast-out 160ms ease-in forwards,
+    crt-flicker 2.4s steps(60, end) infinite,
+    holo-glow 3.4s ease-in-out infinite;
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: perspective(600px) translateY(6px) scale(0.96) rotateX(-3deg);
+  }
+}
+
+/* Mobile tweak */
+@media (max-width: 520px) {
+  .toast-stack {
+    right: 50%;
+    transform: translateX(50%);
+    width: min(92vw, 420px);
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <!-- MENU MOUNT -->
+    <div id="menuMount"></div>
+
+    <div class="app-container">
+      <div class="content-card">
+        <div class="hero">
+          <div class="round-logo">
+            <img src="/assets/logo.jpg" alt="Zord Logo" />
+          </div>
+          <div class="hero-subtitle-small">ZORDINAL TOOLING</div>
+          <div class="main-title">METADATA CREATOR</div>
+          <div class="hero-subtitle-main">
+            Make metadata for your Zordinal collections
+          </div>
+          <div class="hint" style="max-width: 640px; margin-top: 0.5rem;">
+            Once your collection is inscribed, you can generate JSON
+            metadata for the Decentralized Zordinals Marketplace and other platforms.
+            <br /><br />
+            <span class="pill-inline">name</span>,
+            <span class="pill-inline">inscriptionId</span> and optional
+            <span class="pill-inline">attributes</span>.
+          </div>
+        </div>
+
+        <!-- MODE SWITCHER -->
+        <div id="modePanel" class="panel">
+          <div class="panel-title">Choose mode</div>
+          <div class="panel-desc">
+            Basic = just name + inscriptionId. Advanced = full attribute
+            editing.<br/><br/> HashLips = convert existing <code>_metadata.json</code>.
+          </div>
+          <div class="mode-toggle">
+            <button id="modeBasicBtn" class="mode-btn active" type="button">
+              BASIC
+            </button>
+            <button id="modeAdvancedBtn" class="mode-btn" type="button">
+              ADVANCED
+            </button>
+            <button id="modeHashBtn" class="mode-btn" type="button">
+              HASHLIPS → ZORDINALS
+            </button>
+          </div>
+        </div>
+
+        <!-- BASIC MODE -->
+        <div id="basicMode" class="panel" style="margin-top: 0.8rem;">
+          <div class="panel-title">Basic metadata (name + inscriptionId)</div>
+          <div class="panel-desc">
+            Generate simple metadata entries in the form:
+            <code>{ "inscriptionId": "", "name": "Collection #1" }</code>.
+          </div>
+
+          <div class="input-row">
+            <span class="label-inline">Collection name</span>
+            <input
+              id="basicCollectionName"
+              class="modal-input small-input"
+              placeholder="e.g. Zords"
+            />
+          </div>
+
+          <div class="input-row">
+            <span class="label-inline">Collection size</span>
+            <input
+              id="basicCollectionSize"
+              class="modal-input small-input"
+              placeholder="e.g. 1000"
+              inputmode="numeric"
+            />
+          </div>
+
+          <div class="radio-row">
+            <label>
+              <input
+                type="radio"
+                name="basicIdMode"
+                value="none"
+                checked
+              />
+              Leave <code>inscriptionId</code> blank (fill later)
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="basicIdMode"
+                value="paste"
+              />
+              Paste <code>inscriptionId</code> list now
+            </label>
+          </div>
+
+          <div style="margin-top: 0.4rem;">
+            <button
+              id="basicPasteIdsBtn"
+              class="cmd-btn tiny-btn"
+              type="button"
+            >
+              PASTE INSCRIPTION IDs
+            </button>
+            <span
+              id="basicIdStatus"
+              class="status-inline"
+              style="margin-left: 0.4rem;"
+            ></span>
+          </div>
+
+          <div class="hint">
+            IDs should be one per line, or a JSON array like:
+            <code>["id1i0","id2i0",...]</code>. First ID = #1, second = #2,
+            etc.
+          </div>
+
+          <div class="response-box json-box" style="margin-top: 0.6rem;">
+            <pre id="basicOutputPre">// Basic metadata JSON will appear here</pre>
+          </div>
+
+          <div
+            class="flex-row"
+            style="margin-top: 0.4rem; justify-content: flex-end;"
+          >
+            <button
+              id="basicCopyBtn"
+              class="cmd-btn tiny-btn"
+              type="button"
+            >
+              COPY
+            </button>
+            <button
+              id="basicDownloadBtn"
+              class="cmd-btn tiny-btn"
+              type="button"
+            >
+              DOWNLOAD
+            </button>
+          </div>
+        </div>
+
+        <!-- ADVANCED MODE -->
+        <div
+          id="advancedMode"
+          class="panel"
+          style="margin-top: 0.8rem; display: none;"
+        >
+          <div class="panel-title">Advanced metadata (attributes editor)</div>
+          <div class="panel-desc">
+            Build full trait metadata per piece:
+            <code>{ inscriptionId, name, attributes:{Layer:Trait,...} }</code>.
+          </div>
+
+          <!-- Step 1 wrapper so we can hide it later -->
+          <div id="advSetupSection">
+            <div class="section-title">Step 1 — Collection setup</div>
+            <div class="input-row">
+              <span class="label-inline">Collection name</span>
+              <input
+                id="advCollectionName"
+                class="modal-input small-input"
+                placeholder="e.g. Zords"
+              />
+            </div>
+
+            <div class="input-row">
+              <span class="label-inline">Collection size</span>
+              <input
+                id="advCollectionSize"
+                class="modal-input small-input"
+                placeholder="e.g. 1000"
+                inputmode="numeric"
+              />
+            </div>
+
+            <div class="radio-row">
+              <label>
+                <input
+                  type="radio"
+                  name="advIdMode"
+                  value="none"
+                  checked
+                />
+                Leave <code>inscriptionId</code> blank (fill later)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="advIdMode"
+                  value="paste"
+                />
+                Paste <code>inscriptionId</code> list now
+              </label>
+            </div>
+
+            <div style="margin-top: 0.4rem;">
+              <button
+                id="advPasteIdsBtn"
+                class="cmd-btn tiny-btn"
+                type="button"
+              >
+                PASTE INSCRIPTION IDs
+              </button>
+              <span
+                id="advIdStatus"
+                class="status-inline"
+                style="margin-left: 0.4rem;"
+              ></span>
+            </div>
+
+            <div class="hint">
+              After setup you’ll walk through each item and add traits. Values
+              you’ve used before will show up in the dropdowns for fast reuse.
+            </div>
+
+            <div style="margin-top: 0.5rem;">
+              <button
+                id="advStartBtn"
+                class="cmd-btn tiny-btn"
+                type="button"
+              >
+                START ATTRIBUTE EDITOR
+              </button>
+              <span
+                id="advSetupStatus"
+                class="status-inline"
+                style="margin-left: 0.4rem;"
+              ></span>
+            </div>
+          </div>
+
+          <!-- Attribute editor -->
+          <div id="advEditorSection" style="margin-top: 0.8rem; display: none;">
+            <div class="section-title">
+              Step 2 — Editing attributes
+            </div>
+            <div class="hint">
+              Editing
+              <span id="advCurrentLabel">#1</span>
+              • Use <span class="pill-inline">Add attribute</span> to add
+              rows. Click
+              <span class="pill-inline">Attributes complete</span> to move
+              to the next item.
+            </div>
+
+            <div
+              class="flex-row"
+              style="margin-top: 0.4rem; justify-content: space-between;"
+            >
+              <div class="flex-row">
+                <button
+                  id="advPrevBtn"
+                  class="cmd-btn tiny-btn"
+                  type="button"
+                >
+                  ◀ PREV
+                </button>
+                <button
+                  id="advNextBtn"
+                  class="cmd-btn tiny-btn"
+                  type="button"
+                >
+                  NEXT ▶
+                </button>
+              </div>
+              <div class="flex-row">
+                <span
+                  id="advIndexSummary"
+                  class="status-inline"
+                ></span>
+              </div>
+            </div>
+
+            <!-- image preview + editor + json -->
+            <div class="two-col" style="margin-top: 0.6rem;">
+              <div class="two-col-pane">
+                <div class="two-col-title">Current piece</div>
+                <div id="advPieceInfo" class="hint">
+                  Collection #1
+                </div>
+
+                <div class="image-preview-box" id="advImagePreview">
+                  <span class="hint">
+                    If this piece has an <code>inscriptionId</code>, a preview
+                    will be loaded from <code>/api/inscription/:txid</code>.
+                  </span>
+                </div>
+
+                <div
+                  class="two-col-title"
+                  style="margin-top: 0.5rem;"
+                >
+                  Attributes
+                </div>
+                <div class="hint">
+                  Layer &amp; trait fields have dropdowns with previously used
+                  values. Type to filter, use arrows + enter/tab.
+                </div>
+
+                <div
+                  id="advAttrRows"
+                  style="margin-top: 0.4rem;"
+                ></div>
+
+                <div
+                  class="flex-row"
+                  style="margin-top: 0.4rem;"
+                >
+                  <button
+                    id="advAddAttrBtn"
+                    class="cmd-btn tiny-btn"
+                    type="button"
+                  >
+                    ADD ATTRIBUTE
+                  </button>
+                  <button
+                    id="advAttrDoneBtn"
+                    class="cmd-btn tiny-btn"
+                    type="button"
+                  >
+                    ATTRIBUTES COMPLETE FOR THIS PIECE
+                  </button>
+                </div>
+              </div>
+
+              <div class="two-col-pane">
+                <div class="two-col-title">
+                  Live Zordinal metadata JSON
+                </div>
+                <div class="response-box json-box">
+                  <pre id="advOutputPre">// Advanced metadata JSON will appear here</pre>
+                </div>
+
+                <div
+                  class="flex-row"
+                  style="margin-top: 0.4rem; justify-content: flex-end;"
+                >
+                  <button
+                    id="advCopyBtn"
+                    class="cmd-btn tiny-btn"
+                    type="button"
+                  >
+                    COPY
+                  </button>
+                  <button
+                    id="advDownloadBtn"
+                    class="cmd-btn tiny-btn"
+                    type="button"
+                  >
+                    DOWNLOAD
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HASHLIPS MODE -->
+        <div
+          id="hashMode"
+          class="panel"
+          style="margin-top: 0.8rem; display: none;"
+        >
+          <div class="panel-title">
+            HashLips → Zordinal metadata converter
+          </div>
+          <div class="panel-desc">
+            Drop in a standard HashLips <code>_metadata.json</code> and
+            convert it into Zordinal-style metadata with optional inscription
+            IDs.
+          </div>
+
+          <div class="input-row">
+            <input
+              id="hashFileInput"
+              type="file"
+              accept=".json"
+              class="modal-input"
+              style="max-width: 320px;"
+            />
+            <button
+              id="hashConvertBtn"
+              class="cmd-btn tiny-btn"
+              type="button"
+            >
+              UPLOAD &amp; PARSE
+            </button>
+          </div>
+          <div
+            id="hashFileStatus"
+            class="status-inline"
+            style="margin-top: 0.2rem;"
+          ></div>
+
+          <div
+            id="hashOptionsSection"
+            style="margin-top: 0.8rem; display: none;"
+          >
+            <div class="section-title">Step 1 — Collection name</div>
+            <div class="hint">
+              Detected from HashLips names like
+              <code>"Zords #1"</code>.
+            </div>
+
+            <div style="margin-top: 0.4rem;">
+              <div class="status-inline" id="hashDetectedNameLabel"></div>
+            </div>
+
+            <div class="radio-row" style="margin-top: 0.4rem;">
+              <label>
+                <input
+                  type="radio"
+                  name="hashNameMode"
+                  value="keep"
+                  checked
+                />
+                Keep detected name
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="hashNameMode"
+                  value="change"
+                />
+                Change collection name
+              </label>
+            </div>
+
+            <div class="input-row" style="margin-top: 0.4rem;">
+              <span class="label-inline">New name</span>
+              <input
+                id="hashNameInput"
+                class="modal-input small-input"
+                placeholder="e.g. Zordinal Cowz"
+                disabled
+              />
+            </div>
+
+            <div class="section-title" style="margin-top: 0.7rem;">
+              Step 2 — Inscription IDs
+            </div>
+            <div class="radio-row">
+              <label>
+                <input
+                  type="radio"
+                  name="hashIdMode"
+                  value="none"
+                  checked
+                />
+                Leave <code>inscriptionId</code> blank (fill later)
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="hashIdMode"
+                  value="paste"
+                />
+                Paste IDs (in order) now
+              </label>
+            </div>
+
+            <div style="margin-top: 0.4rem;">
+              <button
+                id="hashPasteIdsBtn"
+                class="cmd-btn tiny-btn"
+                type="button"
+              >
+                PASTE INSCRIPTION IDs
+              </button>
+              <span
+                id="hashIdStatus"
+                class="status-inline"
+                style="margin-left: 0.4rem;"
+              ></span>
+            </div>
+
+            <div class="hint">
+              Paste IDs one per line, or as
+              <code>["id1i0","id2i0",...]</code>. First ID = #1, second =
+              #2, etc.
+            </div>
+
+            <div
+              class="section-title"
+              style="margin-top: 0.7rem;"
+            >
+              Step 3 — Converted Zordinal metadata
+            </div>
+            <div class="response-box json-box">
+              <pre id="hashOutputPre">// Converted Zordinal metadata will appear here</pre>
+            </div>
+
+            <div
+              class="flex-row"
+              style="margin-top: 0.4rem; justify-content: flex-end;"
+            >
+              <button
+                id="hashCopyBtn"
+                class="cmd-btn tiny-btn"
+                type="button"
+              >
+                COPY
+              </button>
+              <button
+                id="hashDownloadBtn"
+                class="cmd-btn tiny-btn"
+                type="button"
+              >
+                DOWNLOAD
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          © <span id="yearSpan"></span> Zord.cash • Metadata Forge
+        </div>
+      </div>
+    </div>
+
+    <!-- INSCRIPTION ID PASTE MODAL (shared) -->
+    <div id="idModalOverlay" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">Paste inscription IDs</div>
+          <div id="idModalClose" class="modal-close">X</div>
+        </div>
+        <div class="modal-body">
+          <div class="modal-label">IDs list</div>
+          <textarea
+            id="idListInput"
+            class="modal-textarea"
+            placeholder='Paste IDs here. Example:
+[
+  "0003c0...i0",
+  "000884...i0",
+  "0024fb...i0"
+]
+
+Or just:
+0003c0...i0
+000884...i0
+0024fb...i0
+'
+          ></textarea>
+          <div class="modal-desc">
+            First ID becomes #1, second becomes #2, and so on. Order is
+            preserved exactly for collection integrity.
+          </div>
+          <div id="idModalStatus" class="modal-status"></div>
+        </div>
+        <div class="modal-footer">
+          <button
+            id="idModalCancel"
+            class="cmd-btn tiny-btn"
+            type="button"
+          >
+            CANCEL
+          </button>
+          <button
+            id="idModalConfirm"
+            class="cmd-btn tiny-btn"
+            type="button"
+          >
+            APPLY IDS
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATALISTS FOR ADVANCED AUTOCOMPLETE -->
+    <datalist id="advLayerOptions"></datalist>
+    <datalist id="advTraitOptions"></datalist>
+
+    <!-- Toast stack -->
+    <div id="toastStack" class="toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+      function $(id) {
+        return document.getElementById(id);
+      }
+
+      /* ========= Toasts ========= */
+      function notify(message, type, duration) {
+        if (typeof type === 'undefined') type = 'info';
+        if (typeof duration === 'undefined') duration = 2500;
+
+        var stack = document.getElementById('toastStack');
+        if (!stack) return;
+
+        var t = document.createElement('div');
+        t.className = 'toast ' + type;
+
+        var ico =
+          type === 'success'
+            ? ''
+            : type === 'error'
+            ? '⚠️'
+            : '✨';
+
+        t.innerHTML =
+          '<div class="ico" aria-hidden="true">' +
+          ico +
+          '</div>' +
+          '<div class="msg">' +
+          message +
+          '</div>' +
+          '<button class="close" aria-label="Close">✕</button>';
+
+        var close = function () {
+          t.style.animation = 'toast-out 160ms ease-in forwards';
+          setTimeout(function () {
+            t.remove();
+          }, 160);
+        };
+
+        t.querySelector('.close').addEventListener('click', close);
+        stack.appendChild(t);
+
+        if (duration > 0) {
+          setTimeout(close, duration);
+        }
+        return { close: close };
+      }
+
+      /* ------------ GLOBAL MENU IMPORT ------------ */
+
+      async function loadGlobalMenu() {
+        const mount = document.getElementById('menuMount');
+        if (!mount) return;
+
+        try {
+          const res = await fetch('/assets-page/menu.html', {
+            cache: 'no-store',
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const html = await res.text();
+          mount.innerHTML = html;
+          setupImportedMenu();
+        } catch (err) {
+          console.error('Failed to load shared menu:', err);
+        }
+      }
+
+      function setupImportedMenu() {
+        const menuButton = $('menuButton');
+        const overlay = document.getElementById('sidebarOverlay');
+        const closeBtn = document.getElementById('sidebarClose');
+
+        if (!menuButton || !overlay || !closeBtn) {
+          console.warn('Menu elements not found after import.');
+          return;
+        }
+
+        const close = () => overlay.classList.remove('active');
+
+        menuButton.addEventListener('click', () => {
+          overlay.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', close);
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) close();
+        });
+      }
+
+      /* ------------ INSCRIPTION ID PARSER ------------ */
+
+      function parseInscriptionIdList(raw) {
+        const text = (raw || '').trim();
+        if (!text) return [];
+
+        // Try JSON array first
+        try {
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed)) {
+            return parsed
+              .map((v) => (typeof v === 'string' ? v.trim() : ''))
+              .filter((v) => v);
+          }
+        } catch (e) {
+          // ignore, we'll try line-based
+        }
+
+        // Fallback: split on newlines / commas
+        return text
+          .split(/[\r\n,]+/)
+          .map((v) => v.trim())
+          .filter((v) => v);
+      }
+
+      /* ------------ BASIC MODE STATE + LOGIC ------------ */
+
+      let basicInscriptionIds = [];
+
+      function getBasicCollectionName() {
+        const name = $('basicCollectionName').value.trim();
+        return name || 'Zordinal Collection';
+      }
+
+      function getBasicSize() {
+        const raw = $('basicCollectionSize').value.trim();
+        const n = parseInt(raw, 10);
+        return Number.isFinite(n) && n > 0 ? n : 0;
+      }
+
+      function updateBasicIdStatus(count, size) {
+        const el = $('basicIdStatus');
+        if (!size) {
+          el.textContent = '';
+          el.className = 'status-inline';
+          return;
+        }
+        if (!count) {
+          el.textContent = 'No IDs provided yet.';
+          el.className = 'status-inline';
+          return;
+        }
+        el.className = 'status-inline ok';
+        if (count === size) {
+          el.textContent = 'Loaded ' + count + ' IDs (perfect match).';
+        } else if (count < size) {
+          el.textContent =
+            'Loaded ' +
+            count +
+            ' IDs (will pad remaining ' +
+            (size - count) +
+            ' with empty strings).';
+        } else {
+          el.textContent =
+            'Loaded ' +
+            count +
+            ' IDs (extra IDs will be ignored beyond ' +
+            size +
+            ').';
+        }
+      }
+
+      function buildBasicMetadata() {
+        const size = getBasicSize();
+        const collName = getBasicCollectionName();
+        const out = [];
+        if (!size) {
+          $('basicOutputPre').textContent =
+            '// Enter a collection size to generate metadata.';
+          return;
+        }
+
+        const useIds =
+          document.querySelector('input[name="basicIdMode"]:checked')
+            ?.value === 'paste';
+
+        for (let i = 0; i < size; i++) {
+          const id =
+            useIds && basicInscriptionIds[i]
+              ? basicInscriptionIds[i]
+              : '';
+          out.push({
+            inscriptionId: id,
+            name: collName + ' #' + (i + 1),
+          });
+        }
+
+        $('basicOutputPre').textContent = JSON.stringify(out, null, 2);
+        updateBasicIdStatus(basicInscriptionIds.length, size);
+      }
+
+      async function copyText(text) {
+        try {
+          await navigator.clipboard.writeText(text || '');
+          notify('Copied to clipboard.', 'success');
+        } catch (e) {
+          console.error(e);
+          notify('Copy failed, please copy manually.', 'error', 3500);
+        }
+      }
+
+/* ----------- UNIVERSAL AUTO-NAMED JSON DOWNLOAD ----------- */
+
+    function downloadJsonAuto(collectionName, data) {
+        if (!data) return;
+        const safeName =
+            (collectionName || "zordinals").replace(/[^a-z0-9_\- ]+/gi, "").trim() ||
+            "zordinals";
+
+        const fileName = safeName + ".json";
+
+        const blob = new Blob([data], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(a.href);
+        a.remove();
+        }
+
+        /* ------------ BASIC MODE DOWNLOAD ------------ */
+        $('basicDownloadBtn').addEventListener('click', () => {
+        const name = getBasicCollectionName();
+        const json = $('basicOutputPre').textContent || "";
+        downloadJsonAuto(name, json);
+        });
+
+        /* ------------ ADVANCED MODE DOWNLOAD ------------ */
+        $('advDownloadBtn').addEventListener('click', () => {
+        const name = getAdvCollectionName();
+        const json = $('advOutputPre').textContent || "";
+        downloadJsonAuto(name, json);
+        });
+
+        /* ------------ HASHLIPS MODE DOWNLOAD ------------ */
+        $('hashDownloadBtn').addEventListener('click', () => {
+        const name = getHashFinalCollectionName();
+        const json = $('hashOutputPre').textContent || "";
+        downloadJsonAuto(name, json);
+        });
+
+
+      /* ------------ ADVANCED MODE STATE + LOGIC ------------ */
+
+      let advInscriptionIds = [];
+      let advItems = [];
+      let advCurrentIndex = 0;
+      let advSize = 0;
+      let advCollectionName = '';
+      let advInitialised = false;
+      const advKnownLayers = new Set();
+      const advKnownTraits = new Set();
+
+      function getAdvCollectionName() {
+        const name = $('advCollectionName').value.trim();
+        return name || 'Zordinal Collection';
+      }
+
+      function getAdvSize() {
+        const raw = $('advCollectionSize').value.trim();
+        const n = parseInt(raw, 10);
+        return Number.isFinite(n) && n > 0 ? n : 0;
+      }
+
+      function updateAdvIdStatus(count, size) {
+        const el = $('advIdStatus');
+        if (!size) {
+          el.textContent = '';
+          el.className = 'status-inline';
+          return;
+        }
+        if (!count) {
+          el.textContent = 'No IDs provided yet.';
+          el.className = 'status-inline';
+          return;
+        }
+        el.className = 'status-inline ok';
+        if (count === size) {
+          el.textContent = 'Loaded ' + count + ' IDs (perfect match).';
+        } else if (count < size) {
+          el.textContent =
+            'Loaded ' +
+            count +
+            ' IDs (will pad remaining ' +
+            (size - count) +
+            ' with empty strings).';
+        } else {
+          el.textContent =
+            'Loaded ' +
+            count +
+            ' IDs (extra IDs will be ignored beyond ' +
+            size +
+            ').';
+        }
+      }
+
+      function initAdvancedItems() {
+        advCollectionName = getAdvCollectionName();
+        advSize = getAdvSize();
+        if (!advSize) {
+          $('advSetupStatus').textContent =
+            'Please enter a valid collection size.';
+          $('advSetupStatus').className = 'status-inline error';
+          notify('Enter a valid collection size before starting.', 'error');
+          return false;
+        }
+
+        const useIds =
+          document.querySelector('input[name="advIdMode"]:checked')
+            ?.value === 'paste';
+
+        advItems = [];
+        for (let i = 0; i < advSize; i++) {
+          const id =
+            useIds && advInscriptionIds[i]
+              ? advInscriptionIds[i]
+              : '';
+          advItems.push({
+            inscriptionId: id,
+            name: advCollectionName + ' #' + (i + 1),
+            attributes: {},
+          });
+        }
+
+        advCurrentIndex = 0;
+        advInitialised = true;
+        $('advEditorSection').style.display = 'block';
+        const setupSection = $('advSetupSection');
+        if (setupSection) setupSection.style.display = 'none';
+        $('advSetupStatus').textContent = 'Attribute editor initialised.';
+        $('advSetupStatus').className = 'status-inline ok';
+        updateAdvIdStatus(advInscriptionIds.length, advSize);
+        updateAdvIndexSummary();
+        renderAdvForCurrent();
+        return true;
+      }
+
+      function updateAdvIndexSummary() {
+        if (!advInitialised || !advSize) {
+          $('advIndexSummary').textContent = '';
+          return;
+        }
+        $('advIndexSummary').textContent =
+          'Editing ' +
+          (advCurrentIndex + 1) +
+          ' / ' +
+          advSize;
+      }
+
+      function renderAdvAttrRowsFromItem(item) {
+        const container = $('advAttrRows');
+        container.innerHTML = '';
+        const attrs = item.attributes || {};
+        const keys = Object.keys(attrs);
+        if (!keys.length) {
+          // start with one empty row for convenience
+          addAdvAttrRow('', '');
+          return;
+        }
+        keys.forEach((layer) => {
+          const trait = attrs[layer] ?? '';
+          addAdvAttrRow(layer, trait);
+        });
+      }
+
+      function addAdvAttrRow(layerText, traitText) {
+        const container = $('advAttrRows');
+        const row = document.createElement('div');
+        row.className = 'attr-row';
+
+        const layerInput = document.createElement('input');
+        layerInput.className = 'modal-input attr-input';
+        layerInput.placeholder = 'Layer (e.g. Background)';
+        layerInput.value = layerText || '';
+        layerInput.setAttribute('list', 'advLayerOptions');
+
+        const traitInput = document.createElement('input');
+        traitInput.className = 'modal-input attr-input';
+        traitInput.placeholder = 'Trait (e.g. BTC Orange)';
+        traitInput.value = traitText || '';
+        traitInput.setAttribute('list', 'advTraitOptions');
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'cmd-btn tiny-btn';
+        removeBtn.textContent = '✕';
+        removeBtn.addEventListener('click', () => {
+          container.removeChild(row);
+        });
+
+        row.appendChild(layerInput);
+        row.appendChild(traitInput);
+        row.appendChild(removeBtn);
+        container.appendChild(row);
+      }
+
+      function saveCurrentAdvAttributes() {
+        if (!advInitialised || !advItems.length) return;
+        const item = advItems[advCurrentIndex];
+        const container = $('advAttrRows');
+        const rows = container.querySelectorAll('.attr-row');
+        const attrs = {};
+        rows.forEach((row) => {
+          const inputs = row.querySelectorAll('input');
+          if (inputs.length >= 2) {
+            const layer = inputs[0].value.trim();
+            const trait = inputs[1].value.trim();
+            if (layer && trait) {
+              attrs[layer] = trait;
+              advKnownLayers.add(layer);
+              advKnownTraits.add(trait);
+            }
+          }
+        });
+        item.attributes = attrs;
+        refreshAdvDatalists();
+        updateAdvOutputJson();
+      }
+
+      function refreshAdvDatalists() {
+        const layerDl = document.getElementById('advLayerOptions');
+        const traitDl = document.getElementById('advTraitOptions');
+        if (layerDl) {
+          layerDl.innerHTML = '';
+          Array.from(advKnownLayers).forEach((val) => {
+            const opt = document.createElement('option');
+            opt.value = val;
+            layerDl.appendChild(opt);
+          });
+        }
+        if (traitDl) {
+          traitDl.innerHTML = '';
+          Array.from(advKnownTraits).forEach((val) => {
+            const opt = document.createElement('option');
+            opt.value = val;
+            traitDl.appendChild(opt);
+          });
+        }
+      }
+
+      // Advanced preview: use backend /api/inscription/:txid
+      async function updateAdvImagePreview() {
+        const previewBox = $('advImagePreview');
+        previewBox.innerHTML = '';
+
+        if (!advInitialised || !advItems.length) {
+          const span = document.createElement('span');
+          span.className = 'hint';
+          span.textContent = 'Not initialised yet.';
+          previewBox.appendChild(span);
+          return;
+        }
+
+        const item = advItems[advCurrentIndex];
+        const inscId = item.inscriptionId;
+
+        if (!inscId) {
+          const span = document.createElement('span');
+          span.className = 'hint';
+          span.textContent = 'No inscriptionId set for this piece yet.';
+          previewBox.appendChild(span);
+          return;
+        }
+
+        const loading = document.createElement('span');
+        loading.className = 'hint';
+        loading.textContent = 'Loading preview...';
+        previewBox.appendChild(loading);
+
+        try {
+          const res = await fetch(
+            '/api/inscription/' + encodeURIComponent(inscId)
+          );
+          if (!res.ok) {
+            throw new Error('decode endpoint returned ' + res.status);
+          }
+
+          const meta = await res.json();
+          const mime =
+            meta.mimeType ||
+            meta.contentType ||
+            (meta.headers && meta.headers['content-type']) ||
+            '';
+          const url =
+            meta.fileUrl || meta.url || meta.contentUrl || meta.href;
+
+          if (!url) {
+            previewBox.innerHTML = '';
+            const span = document.createElement('span');
+            span.className = 'hint';
+            span.textContent =
+              'No file URL returned from /api/inscription for this txid.';
+            previewBox.appendChild(span);
+            return;
+          }
+
+          if (mime && !mime.startsWith('image/')) {
+            previewBox.innerHTML = '';
+            const span = document.createElement('span');
+            span.className = 'hint';
+            span.textContent =
+              'Content is not an image (type: ' + mime + ').';
+            previewBox.appendChild(span);
+            return;
+          }
+
+          previewBox.innerHTML = '';
+          const img = document.createElement('img');
+          img.alt = inscId;
+          img.src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+          img.onerror = () => {
+            previewBox.innerHTML = '';
+            const span = document.createElement('span');
+            span.className = 'hint';
+            span.textContent = 'Error loading image preview.';
+            previewBox.appendChild(span);
+          };
+          previewBox.appendChild(img);
+        } catch (err) {
+          console.error('Advanced preview decode error:', err);
+          previewBox.innerHTML = '';
+          const span = document.createElement('span');
+          span.className = 'hint';
+          span.textContent = 'No preview available for this inscriptionId.';
+          previewBox.appendChild(span);
+        }
+      }
+
+      function updateAdvOutputJson() {
+        if (!advInitialised || !advItems.length) {
+          $('advOutputPre').textContent =
+            '// Initialise the attribute editor first.';
+          return;
+        }
+        $('advOutputPre').textContent = JSON.stringify(advItems, null, 2);
+      }
+
+      async function renderAdvForCurrent() {
+        if (!advInitialised || !advItems.length) return;
+        const item = advItems[advCurrentIndex];
+        $('advCurrentLabel').textContent = item.name;
+        $('advPieceInfo').textContent =
+          'Editing attributes for ' + item.name;
+        updateAdvIndexSummary();
+        renderAdvAttrRowsFromItem(item);
+        await updateAdvImagePreview();
+        updateAdvOutputJson();
+      }
+
+      function moveAdvIndex(delta) {
+        if (!advInitialised || !advItems.length) return;
+        saveCurrentAdvAttributes();
+        const next = advCurrentIndex + delta;
+        if (next < 0 || next >= advItems.length) return;
+        advCurrentIndex = next;
+        renderAdvForCurrent();
+      }
+
+      /* ------------ HASHLIPS MODE STATE + LOGIC ------------ */
+
+      let hashSourceItems = [];
+      let hashDetectedName = '';
+      let hashInscriptionIds = [];
+      let hashOutputData = [];
+
+      function inferHashCollectionName(items) {
+        if (!items || !items.length) return 'HashLips Collection';
+        const first = items[0];
+        if (typeof first.name === 'string') {
+          const n = first.name;
+          const idx = n.indexOf('#');
+          if (idx > 0) {
+            return n.slice(0, idx).trim();
+          }
+          return n.trim() || 'HashLips Collection';
+        }
+        return 'HashLips Collection';
+      }
+
+      function getHashFinalCollectionName() {
+        const mode =
+          document.querySelector('input[name="hashNameMode"]:checked')
+            ?.value || 'keep';
+        if (mode === 'change') {
+          const txt = $('hashNameInput').value.trim();
+          if (txt) return txt;
+        }
+        return hashDetectedName || 'HashLips Collection';
+      }
+
+      function updateHashNameInputState() {
+        const mode =
+          document.querySelector('input[name="hashNameMode"]:checked')
+            ?.value || 'keep';
+        const input = $('hashNameInput');
+        if (mode === 'change') {
+          input.disabled = false;
+        } else {
+          input.disabled = true;
+        }
+        updateHashOutputJson();
+      }
+
+      function updateHashIdStatus(count, total) {
+        const el = $('hashIdStatus');
+        if (!total) {
+          el.textContent = '';
+          el.className = 'status-inline';
+          return;
+        }
+        if (!count) {
+          el.textContent = 'No IDs provided yet.';
+          el.className = 'status-inline';
+          return;
+        }
+        el.className = 'status-inline ok';
+        if (count === total) {
+          el.textContent = 'Loaded ' + count + ' IDs (perfect match).';
+        } else if (count < total) {
+          el.textContent =
+            'Loaded ' +
+            count +
+            ' IDs (remaining ' +
+            (total - count) +
+            ' will be blank).';
+        } else {
+          el.textContent =
+            'Loaded ' +
+            count +
+            ' IDs (extra IDs ignored beyond ' +
+            total +
+            ').';
+        }
+      }
+
+      function updateHashOutputJson() {
+        if (!hashSourceItems || !hashSourceItems.length) {
+          $('hashOutputPre').textContent =
+            '// Upload a HashLips _metadata.json file to begin.';
+          return;
+        }
+
+        const idMode =
+          document.querySelector('input[name="hashIdMode"]:checked')
+            ?.value || 'none';
+        const pasteChecked = idMode === 'paste';
+
+        const items = hashSourceItems;
+        hashOutputData = [];
+        const baseName = getHashFinalCollectionName();
+
+        const out = [];
+        for (let i = 0; i < items.length; i++) {
+          const src = items[i] || {};
+          const entry = {
+            inscriptionId:
+              pasteChecked && hashInscriptionIds[i]
+                ? hashInscriptionIds[i]
+                : '',
+            name: baseName + ' #' + (i + 1),
+            attributes: {},
+          };
+          if (Array.isArray(src.attributes)) {
+            src.attributes.forEach((t) => {
+              if (!t) return;
+              const key = t.trait_type || t.traitType;
+              if (!key) return;
+              entry.attributes[key] =
+                t.value != null ? t.value : '';
+            });
+          } else if (
+            src.attributes &&
+            typeof src.attributes === 'object'
+          ) {
+            for (const k in src.attributes) {
+              if (Object.prototype.hasOwnProperty.call(src.attributes, k)) {
+                entry.attributes[k] = src.attributes[k];
+              }
+            }
+          }
+          out.push(entry);
+        }
+        hashOutputData = out;
+        $('hashOutputPre').textContent = JSON.stringify(out, null, 2);
+        updateHashIdStatus(
+          hashInscriptionIds.length,
+          hashSourceItems.length
+        );
+      }
+
+      /* ------------ SHARED ID MODAL HANDLING ------------ */
+
+      let currentIdTarget = null; // 'basic' | 'advanced' | 'hash'
+      let currentIdExpectedCount = 0;
+
+      function getExpectedIdCountForTarget(target) {
+        if (target === 'basic') {
+          return getBasicSize();
+        }
+        if (target === 'advanced') {
+          return getAdvSize();
+        }
+        if (target === 'hash') {
+          return Array.isArray(hashSourceItems)
+            ? hashSourceItems.length
+            : 0;
+        }
+        return 0;
+      }
+
+      function updateIdModalLiveStatus() {
+        const raw = $('idListInput').value;
+        const ids = parseInscriptionIdList(raw);
+        const count = ids.length;
+        const expected = currentIdExpectedCount;
+        const statusEl = $('idModalStatus');
+
+        if (!count) {
+          statusEl.textContent = 'No IDs detected yet.';
+          statusEl.className = 'modal-status';
+          return;
+        }
+
+        if (!expected) {
+          statusEl.textContent = 'Detected ' + count + ' IDs.';
+          statusEl.className = 'modal-status ok';
+          return;
+        }
+
+        if (count === expected) {
+          statusEl.textContent =
+            'Perfect: ' +
+            count +
+            ' IDs pasted (matches collection size).';
+          statusEl.className = 'modal-status ok';
+        } else if (count < expected) {
+          statusEl.textContent =
+            'Detected ' +
+            count +
+            ' IDs, but collection size is ' +
+            expected +
+            '. Check for missing IDs.';
+          statusEl.className = 'modal-status error';
+        } else {
+          statusEl.textContent =
+            'Detected ' +
+            count +
+            ' IDs, but collection size is ' +
+            expected +
+            '. Extra IDs will be ignored – trim the list.';
+          statusEl.className = 'modal-status error';
+        }
+      }
+
+      function openIdModal(target) {
+        currentIdTarget = target;
+        currentIdExpectedCount = getExpectedIdCountForTarget(target);
+        $('idListInput').value = '';
+
+        const statusEl = $('idModalStatus');
+        if (currentIdExpectedCount > 0) {
+          statusEl.textContent =
+            'Expecting ' +
+            currentIdExpectedCount +
+            ' IDs for this collection.';
+          statusEl.className = 'modal-status';
+        } else {
+          statusEl.textContent =
+            'Paste IDs (one per line or JSON array). Collection size not set yet.';
+          statusEl.className = 'modal-status';
+        }
+
+        $('idModalOverlay').classList.add('active');
+      }
+
+      function closeIdModal() {
+        $('idModalOverlay').classList.remove('active');
+        currentIdTarget = null;
+        currentIdExpectedCount = 0;
+      }
+
+      function applyIdsFromModal() {
+        const raw = $('idListInput').value;
+        const ids = parseInscriptionIdList(raw);
+        const statusEl = $('idModalStatus');
+
+        if (!ids.length) {
+          statusEl.textContent = 'No valid IDs parsed.';
+          statusEl.className = 'modal-status error';
+          notify('No valid inscription IDs detected.', 'error');
+          return;
+        }
+
+        if (currentIdExpectedCount > 0 && ids.length !== currentIdExpectedCount) {
+          statusEl.textContent =
+            'You have pasted ' +
+            ids.length +
+            ' IDs but this collection expects ' +
+            currentIdExpectedCount +
+            '. Please fix the count before applying.';
+          statusEl.className = 'modal-status error';
+          notify('ID count does not match collection size.', 'error');
+          return;
+        }
+
+        statusEl.textContent = 'Loaded ' + ids.length + ' IDs.';
+        statusEl.className = 'modal-status ok';
+
+        if (currentIdTarget === 'basic') {
+          basicInscriptionIds = ids.slice();
+          buildBasicMetadata();
+        } else if (currentIdTarget === 'advanced') {
+          advInscriptionIds = ids.slice();
+          if (advInitialised) {
+            initAdvancedItems(); // rebuild with new IDs
+          } else {
+            const size = getAdvSize();
+            updateAdvIdStatus(ids.length, size);
+          }
+        } else if (currentIdTarget === 'hash') {
+          hashInscriptionIds = ids.slice();
+          updateHashOutputJson();
+        }
+
+        notify('Inscription IDs applied.', 'success');
+        setTimeout(closeIdModal, 200);
+      }
+
+      /* ------------ MODE SWITCHING ------------ */
+
+      function setMode(mode) {
+        const basic = $('basicMode');
+        const adv = $('advancedMode');
+        const hash = $('hashMode');
+        basic.style.display = mode === 'basic' ? 'block' : 'none';
+        adv.style.display = mode === 'advanced' ? 'block' : 'none';
+        hash.style.display = mode === 'hash' ? 'block' : 'none';
+
+        $('modeBasicBtn').classList.toggle('active', mode === 'basic');
+        $('modeAdvancedBtn').classList.toggle('active', mode === 'advanced');
+        $('modeHashBtn').classList.toggle('active', mode === 'hash');
+      }
+
+      /* ------------ DOM READY ------------ */
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const yearSpan = $('yearSpan');
+        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+        // Global menu
+        loadGlobalMenu();
+
+        // Mode buttons
+        $('modeBasicBtn').addEventListener('click', () =>
+          setMode('basic')
+        );
+        $('modeAdvancedBtn').addEventListener('click', () =>
+          setMode('advanced')
+        );
+        $('modeHashBtn').addEventListener('click', () =>
+          setMode('hash')
+        );
+
+        /* BASIC bindings */
+        $('basicCollectionName').addEventListener(
+          'input',
+          buildBasicMetadata
+        );
+        $('basicCollectionSize').addEventListener(
+          'input',
+          buildBasicMetadata
+        );
+        document
+          .querySelectorAll('input[name="basicIdMode"]')
+          .forEach((r) =>
+            r.addEventListener('change', buildBasicMetadata)
+          );
+        $('basicPasteIdsBtn').addEventListener('click', () => {
+          const mode =
+            document.querySelector('input[name="basicIdMode"]:checked')
+              ?.value || 'none';
+          if (mode !== 'paste') {
+            notify(
+              'Select "Paste inscriptionId list now" first.',
+              'error'
+            );
+            return;
+          }
+          openIdModal('basic');
+        });
+        $('basicCopyBtn').addEventListener('click', () =>
+          copyText($('basicOutputPre').textContent || '')
+        );
+
+        /* ADVANCED bindings */
+        document
+          .querySelectorAll('input[name="advIdMode"]')
+          .forEach((r) =>
+            r.addEventListener('change', () => {
+              const size = getAdvSize();
+              updateAdvIdStatus(advInscriptionIds.length, size);
+            })
+          );
+        $('advPasteIdsBtn').addEventListener('click', () => {
+          const mode =
+            document.querySelector('input[name="advIdMode"]:checked')
+              ?.value || 'none';
+          if (mode !== 'paste') {
+            notify(
+              'Select "Paste inscriptionId list now" first.',
+              'error'
+            );
+            return;
+          }
+          openIdModal('advanced');
+        });
+        $('advStartBtn').addEventListener('click', () => {
+          initAdvancedItems();
+        });
+        $('advAddAttrBtn').addEventListener('click', () =>
+          addAdvAttrRow('', '')
+        );
+        $('advAttrDoneBtn').addEventListener('click', () => {
+          saveCurrentAdvAttributes();
+          moveAdvIndex(1);
+        });
+        $('advPrevBtn').addEventListener('click', () =>
+          moveAdvIndex(-1)
+        );
+        $('advNextBtn').addEventListener('click', () =>
+          moveAdvIndex(1)
+        );
+        $('advCopyBtn').addEventListener('click', () =>
+          copyText($('advOutputPre').textContent || '')
+        );
+       /* HASHLIPS bindings */
+        $('hashConvertBtn').addEventListener('click', () => {
+          const fileInput = $('hashFileInput');
+          const file =
+            fileInput.files && fileInput.files[0]
+              ? fileInput.files[0]
+              : null;
+          if (!file) {
+            $('hashFileStatus').textContent =
+              'Please select a _metadata.json file.';
+            $('hashFileStatus').className = 'status-inline error';
+            notify('Select a _metadata.json file first.', 'error');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            try {
+              const json = JSON.parse(ev.target.result);
+              if (!Array.isArray(json)) {
+                throw new Error('Expected an array of items.');
+              }
+              hashSourceItems = json;
+              hashDetectedName = inferHashCollectionName(json);
+              $('hashDetectedNameLabel').textContent =
+                'Detected name: "' + hashDetectedName + '"';
+              $('hashNameInput').value = hashDetectedName;
+              $('hashOptionsSection').style.display = 'block';
+              $('hashFileStatus').textContent =
+                'Loaded ' + json.length + ' items.';
+              $('hashFileStatus').className =
+                'status-inline ok';
+              notify(
+                'HashLips metadata loaded: ' +
+                  json.length +
+                  ' items.',
+                'success'
+              );
+              updateHashOutputJson();
+            } catch (e) {
+              console.error(e);
+              $('hashFileStatus').textContent =
+                'Invalid JSON: ' + e.message;
+              $('hashFileStatus').className =
+                'status-inline error';
+              notify('Invalid JSON in _metadata.json.', 'error', 4000);
+            }
+          };
+          reader.onerror = () => {
+            $('hashFileStatus').textContent = 'Failed to read file.';
+            $('hashFileStatus').className = 'status-inline error';
+            notify('Failed to read file.', 'error');
+          };
+          reader.readAsText(file);
+        });
+
+        document
+          .querySelectorAll('input[name="hashNameMode"]')
+          .forEach((r) =>
+            r.addEventListener('change', () => {
+              updateHashNameInputState();
+            })
+          );
+        $('hashNameInput').addEventListener('input', () =>
+          updateHashOutputJson()
+        );
+
+        document
+          .querySelectorAll('input[name="hashIdMode"]')
+          .forEach((r) =>
+            r.addEventListener('change', () =>
+              updateHashOutputJson()
+            )
+          );
+        $('hashPasteIdsBtn').addEventListener('click', () => {
+          const mode =
+            document.querySelector('input[name="hashIdMode"]:checked')
+              ?.value || 'none';
+          if (mode !== 'paste') {
+            notify('Select "Paste IDs now" first.', 'error');
+            return;
+          }
+          openIdModal('hash');
+        });
+        $('hashCopyBtn').addEventListener('click', () =>
+          copyText($('hashOutputPre').textContent || '')
+        );
+
+
+        /* ID MODAL bindings */
+        $('idModalClose').addEventListener('click', closeIdModal);
+        $('idModalCancel').addEventListener('click', closeIdModal);
+        $('idModalConfirm').addEventListener('click', applyIdsFromModal);
+        $('idModalOverlay').addEventListener('click', (e) => {
+          if (e.target.id === 'idModalOverlay') closeIdModal();
+        });
+        $('idListInput').addEventListener('input', updateIdModalLiveStatus);
+
+        // Initial basic output placeholder
+        buildBasicMetadata();
+      });
+    </script>
+  </body>
+</html>

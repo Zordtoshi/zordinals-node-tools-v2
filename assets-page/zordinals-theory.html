@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>ZORDINAL THEORY</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+  body {
+    font-family: 'Press Start 2P', cursive;
+    background-image: url('/assets/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+  }
+
+  .app-container {
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .content-card {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 16px;
+    padding: 2rem 2.2rem; /* Increased padding for more space */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.85);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem; /* Slightly increased gap for better flow */
+    margin-bottom: 1.5rem; /* More space below hero */
+  }
+
+  .round-logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: rgba(255, 215, 0, 0.2);
+    border: 4px solid #F4B728;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .round-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .hero-subtitle-small {
+    font-size: 0.6rem;
+    text-shadow: 2px 2px 4px #111;
+    letter-spacing: 0.08em;
+  }
+
+  .main-title {
+    font-size: 1rem;
+    text-shadow: 4px 4px 8px #111;
+    letter-spacing: 0.1em;
+    color: #F4B728;
+  }
+
+  .hero-subtitle-main {
+    font-size: 0.65rem;
+    opacity: 0.9;
+  }
+
+  .section {
+    margin-top: 1.5rem; /* Increased margin for better separation */
+    font-size: 0.6rem;
+    line-height: 1.8; /* Increased line-height for easier reading */
+  }
+
+  .section-title {
+    font-size: 0.7rem;
+    margin-bottom: 0.6rem; /* More space below titles */
+    text-shadow: 2px 2px 4px #000;
+    color: #ffd700; /* Gold color to make titles stand out and draw the eye */
+  }
+
+  .mono {
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  li {
+    margin-bottom: 0.5rem; /* Increased margin for list items */
+  }
+
+  .tip-address {
+    margin-top: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.55rem;
+    text-align: center;
+  }
+
+  .tip-address span {
+    display: block;
+    margin-top: 0.25rem;
+    word-break: break-all;
+  }
+
+  .footer {
+    margin-top: 1.5rem; /* Increased margin for footer */
+    font-size: 0.55rem;
+    text-align: center;
+    opacity: 0.85;
+  }
+
+  /* MENU */
+
+  .menu-button {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 2px solid #fff;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.7);
+    z-index: 1100;
+  }
+
+  .menu-button img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: flex-end;
+    z-index: 1200;
+  }
+
+  .sidebar-overlay.active {
+    display: flex;
+  }
+
+  .sidebar {
+    width: 260px;
+    max-width: 80vw;
+    background: rgba(10, 10, 10, 0.95);
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.8);
+    border-left: 2px solid rgba(255, 255, 255, 0.25);
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sidebar-title {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px #000;
+  }
+
+  .sidebar-close {
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-left: auto;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+  }
+
+  .sidebar-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .sidebar-menu a {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.7rem;
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    background: rgba(40, 40, 40, 0.9);
+    color: #fff;
+    cursor: pointer;
+    text-shadow: 1px 1px 2px #000;
+    letter-spacing: 0.08em;
+    transition: transform 0.1s ease, box-shadow 0.1s ease,
+      background 0.1s ease;
+    text-decoration: none;
+  }
+
+  .sidebar-menu a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    background: rgba(60, 60, 60, 0.9);
+  }
+</style>  </head>
+  <body>
+    <div id="menuMount"></div>
+
+<div class="app-container">
+  <div class="content-card">
+    <div class="hero">
+      <div class="round-logo">
+        <img src="/assets/logo.jpg" alt="Zord Logo" />
+      </div>
+      <div class="hero-subtitle-small">I Am Zordtoshi..</div>
+      <div class="main-title">ZORDINAL THEORY</div>
+      <div class="hero-subtitle-main">
+        Zimmutable Zordinals On Zcash
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Zordinals — On-Chain Inscriptions for Zcash</div>
+      <p>
+        Zordinals bring ordinal theory to Zcash — allowing you to inscribe images, text, files, and arbitrary digital artifacts directly onto the Zcash blockchain, permanently, immutably, and without relying on off-chain storage.
+      </p>
+      <p>
+        Think of them as NFTs with actual teeth: no servers, no IPFS links that disappear, no “metadata gateways,” no rug pulls via deleted images. Just raw, verifiable, forever-living data baked into the chain.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">What Are Zordinals?</div>
+      <p>
+        Zordinals apply Bitcoin’s ordinal theory to Zcash’s transparent UTXO model:
+      </p>
+      <ul style="margin-top: 0.4rem;">
+        <li>Every satoshi-like unit of ZEC inside a UTXO can be uniquely numbered.</li>
+        <li>Those individually trackable units can be assigned data (“inscriptions”).</li>
+        <li>Once inscribed, the data becomes a permanent part of the blockchain, because it's committed inside the raw transaction.</li>
+        <li>Ownership of a Zordinal = ownership of the UTXO that contains the inscribed satoshis.</li>
+      </ul>
+      <p>
+        The result?
+      </p>
+      <ul style="margin-top: 0.4rem;">
+        <li>• Fully on-chain NFTs</li>
+        <li>• Permanently stored</li>
+        <li>• Never broken by external links</li>
+        <li>• No centralized hosts</li>
+        <li>• No IPFS pinning required</li>
+      </ul>
+      <p>
+        If an “NFT” calls to off-chain data: It’s not a Zord. It’s just… a JPEG with commitment issues.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Immutability & On-Chain Guarantees</div>
+      <p>
+        Zordinals data is inserted directly into a Zcash raw transaction. This means:
+      </p>
+      <ul style="margin-top: 0.4rem;">
+        <li>• It is hashed into the block.</li>
+        <li>• It is validated by every node.</li>
+        <li>• It can’t be changed, removed, or overwritten.</li>
+        <li>• It does not depend on any third-party storage.</li>
+      </ul>
+      <p>
+        As long as Zcash exists, your Zordinals exist.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">How Zordinals Store Data (Simple Explanation)</div>
+      <p>
+        Zcash has limits on how much data can fit into a single transaction field, so inscriptions use a clever trick:
+      </p>
+      <ul style="margin-top: 0.4rem;">
+        <li>1. Your data (image/text/etc) is chunked — It is split into multiple small pieces.</li>
+        <li>2. Each chunk is encoded — We use a lightweight, compact Base64-like encoding for safe insertion.</li>
+        <li>3. Chunks are written into specific locations inside one or more UTXOs — Each chunk is stored inside the ScriptSig / script fields of raw transactions.</li>
+        <li>4. “Link markers” identify the sequence — Each inscription has markers that indicate: Start of inscription, Middle chunks, End of inscription, What order they belong in, What inscription ID they are part of. Think of it like LEGO blocks with matching stickers.</li>
+        <li>5. Indexers can reconstruct the inscription perfectly — By scanning the chain, reading the chunks in order, and reassembling them.</li>
+      </ul>
+      <p>
+        Nothing lives off-chain. Everything needed is inside the blockchain itself.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">How a Zordinal Is Created (High-Level)</div>
+      <p>
+        A special P2SH output is constructed to hold the inscription marker.
+      </p>
+      <p>
+        The inscription data (chunked) is embedded into ScriptSigs across one or more inputs.
+      </p>
+      <p>
+        A funding transaction (“TX0”) prepares the structure.
+      </p>
+      <p>
+        A reveal transaction publishes the completed inscription on-chain.
+      </p>
+      <p>
+        From that point forward: The UTXO becomes the “holder” of the Zordinal. Sending the Zordinal is simply spending that specific UTXO.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Why Zordinals?</div>
+      <ul style="margin-top: 0.4rem;">
+        <li>• Permanence — Zordinals never disappear! Even if every server and IPFS gateway went offline.</li>
+        <li>• Verifiability — Every byte is stored on-chain and validated by consensus rules.</li>
+        <li>• Independence — No dependency on centralized hosting.</li>
+        <li>• Simplicity — You own the UTXO, you own the Zord. No smart contracts, no complex state machines, no magical indexes.</li>
+        <li>• Transparency — Since inscriptions rely on Zcash's transparent UTXOs (not shielded), they are easy to scan, index, and verify.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">What Counts as a “Real” Zordinal?</div>
+      <p>
+        A genuine Zordinal must:
+      </p>
+      <ul style="margin-top: 0.4rem;">
+        <li>• Store 100% of its data ON-CHAIN</li>
+        <li>• Use valid Zordinals encoding and markers</li>
+        <li>• Not rely on external resources (IPFS, HTTP URLs etc.)</li>
+        <li>• Follow the sequential inscription data chunk structure</li>
+      </ul>
+      <p>
+        If it points off-chain? It’s not a Zordinal. It’s cosplay.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Closing Thoughts</div>
+      <p>
+        Zordinals bring the best ideas of ordinal theory to Zcash, delivering:
+      </p>
+      <ul style="margin-top: 0.4rem;">
+        <li>• On-chain permanence</li>
+        <li>• True digital ownership</li>
+        <li>• Fully decentralized NFTs</li>
+        <li>• A standardized, clean, verifiable format</li>
+      </ul>
+      <p>
+        And YES! Your images are actually stored inside the blockchain.
+      </p>
+      <p>
+        No more disappearing artwork. No more 404 NFTs. No more ghosted metadata.
+      </p>
+      <p>
+        Just pure, immutable Zcash.
+      </p>
+    </div>
+
+    <div class="section" style="text-align: center; margin-top: 1rem; font-size: 0.7rem; text-shadow: 2px 2px 4px #000;">
+      Signed by Zordtoshi
+    </div>
+
+    <div class="footer">
+      © <span id="yearSpan"></span> Zord.cash • Zimmutable Zords
+    </div>
+  </div>
+</div>
+
+<script>
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+// ---------------- GLOBAL MENU IMPORT ----------------
+    async function loadGlobalMenu() {
+      const mount = document.getElementById('menuMount');
+      if (!mount) return;
+
+      try {
+        const res = await fetch('/assets-page/menu.html', { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const html = await res.text();
+        mount.insertAdjacentHTML('afterbegin', html);
+        setupImportedMenu();
+      } catch (err) {
+        console.error('Failed to load shared menu:', err);
+      }
+    }
+
+    // wire up imported menu elements
+    function setupImportedMenu() {
+      const menuButton = document.getElementById('menuButton');
+      const overlay = document.getElementById('sidebarOverlay');
+      const closeBtn = document.getElementById('sidebarClose');
+      if (!menuButton || !overlay || !closeBtn) return;
+
+      const close = () => overlay.classList.remove('active');
+      menuButton.addEventListener('click', () => overlay.classList.add('active'));
+      closeBtn.addEventListener('click', close);
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) close();
+      });
+    }
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const yearSpan = $('yearSpan');
+    if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+    loadGlobalMenu();
+  });
+</script>  </body>
+</html>
+

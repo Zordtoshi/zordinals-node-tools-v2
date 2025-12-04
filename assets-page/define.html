@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Zordinal Tooling • Define Traits</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: "Press Start 2P", monospace;
+      background-image: url("/assets/bg.jpg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color:#fff;
+      min-height:100vh;
+    }
+
+    .app-shell {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 2rem;
+    }
+
+    .frame {
+      border-radius: 18px;
+      border: 2px solid #f4b728;
+      background: rgba(0,0,0,0.9);
+      box-shadow: 0 0 25px rgba(0,0,0,0.9);
+      padding: 1.4rem 1.8rem 1.2rem;
+    }
+
+    .hero {
+      text-align:center;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-logo-wrap {
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      border:4px solid #f4b728;
+      margin:0 auto 0.6rem;
+      background:rgba(0,0,0,0.75);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .hero-logo-wrap img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:50%;
+    }
+
+    .hero-sub {
+      font-size:0.65rem;
+      letter-spacing:0.15em;
+    }
+    .hero-title {
+      margin-top:0.35rem;
+      font-size:1.05rem;
+      letter-spacing:0.16em;
+      color:#f4b728;
+    }
+    .hero-desc {
+      margin-top:0.5rem;
+      font-size:0.58rem;
+      max-width: 760px;
+      margin-left:auto;
+      margin-right:auto;
+      line-height:1.6;
+    }
+    .pill {
+      display:inline-block;
+      border-radius:999px;
+      border:1px solid #f4b728;
+      padding:0.15rem 0.45rem;
+      font-size:0.5rem;
+      margin:0 0.15rem;
+    }
+
+    .section {
+      margin-top:1rem;
+      border-radius:16px;
+      border:1px solid #f4b728;
+      padding:0.9rem 1rem;
+    }
+
+    .section-title {
+      font-size:0.75rem;
+      color:#f4b728;
+      margin-bottom:0.4rem;
+    }
+    .section-desc {
+      font-size:0.55rem;
+      margin-bottom:0.6rem;
+      line-height:1.6;
+    }
+
+    .row {
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+
+    .btn {
+      padding:0.35rem 0.9rem;
+      border-radius:999px;
+      border:2px solid #f4b728;
+      background:rgba(15,15,15,0.95);
+      color:#fff;
+      font-size:0.6rem;
+      cursor:pointer;
+      letter-spacing:0.08em;
+      text-shadow:1px 1px 2px #000;
+      transition:transform .1s ease, box-shadow .1s ease, background .1s ease;
+    }
+    .btn:hover {
+      transform:translateY(-1px);
+      box-shadow:0 0 10px #f4b728;
+      background:rgba(40,40,40,0.95);
+    }
+    .btn-ghost {
+      border-color:#fff;
+    }
+    .btn-small {
+      padding:0.3rem 0.6rem;
+      font-size:0.55rem;
+    }
+
+    .input-inline {
+      display:inline-flex;
+      align-items:center;
+      gap:0.35rem;
+      font-size:0.55rem;
+      margin-bottom:0.4rem;
+      flex-wrap:wrap;
+    }
+    .input-inline label {
+      font-size:0.55rem;
+    }
+    .input-text {
+      min-width:190px;
+      padding:0.35rem 0.55rem;
+      border-radius:999px;
+      border:2px solid rgba(255,255,255,0.7);
+      background:rgba(0,0,0,0.9);
+      color:#fff;
+      font-family:"Press Start 2P", monospace;
+      font-size:0.55rem;
+      outline:none;
+    }
+
+    /* Step2 layout */
+    .step2-grid {
+      display:grid;
+      grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.2fr);
+      gap:1rem;
+      margin-top:0.8rem;
+    }
+
+    .preview-panel {
+      border-radius:14px;
+      border:1px solid #f4b728;
+      padding:0.7rem;
+    }
+    .preview-title {
+      font-size:0.7rem;
+      margin-bottom:0.35rem;
+      color:#f4b728;
+    }
+    .preview-sub {
+      font-size:0.55rem;
+      margin-bottom:0.45rem;
+      line-height:1.5;
+    }
+
+    .preview-inner {
+      display:grid;
+      grid-template-columns: 200px minmax(0, 1fr);
+      gap:0.5rem;
+      align-items:flex-start;
+    }
+
+    .mini-wrap {
+      background:#000;
+      border-radius:10px;
+      border:1px solid #f4b728;
+      padding:0.3rem;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    canvas {
+      image-rendering: pixelated;
+    }
+
+    .zoom-wrap {
+      background:#000;
+      border-radius:10px;
+      border:1px solid #f4b728;
+      padding:0.3rem;
+      overflow:hidden;
+      width: 415px; 
+    }
+
+    .controls-row {
+      margin-top:0.45rem;
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.6rem;
+      align-items:center;
+    }
+
+    .controls-col {
+      display:flex;
+      flex-direction:column;
+      gap:0.25rem;
+      font-size:0.55rem;
+    }
+
+    .label-sm {
+      font-size:0.55rem;
+      margin-bottom:0.15rem;
+    }
+
+    .trait-input-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.4rem;
+      align-items:center;
+    }
+
+    .hint {
+      font-size:0.52rem;
+      opacity:0.9;
+      margin-top:0.25rem;
+      line-height:1.5;
+    }
+
+    .sidebar {
+      border-radius:14px;
+      border:1px solid #f4b728;
+      padding:0.7rem 0.85rem 0.8rem;
+      font-size:0.55rem;
+    }
+    .sidebar-section-title {
+      font-size:0.7rem;
+      color:#f4b728;
+      margin-bottom:0.25rem;
+    }
+    .sidebar-block {
+      margin-top:0.7rem;
+    }
+    .traits-list {
+      margin-top:0.35rem;
+      max-height:260px;
+      overflow-y:auto;
+      padding-right:0.3rem;
+    }
+    .trait-type-label {
+      color:#f4b728;
+      margin-top:0.25rem;
+    }
+    .trait-value {
+      margin-left:0.8rem;
+      cursor:pointer;
+      margin-top:0.1rem;
+    }
+    .trait-value:hover {
+      text-decoration:underline;
+    }
+
+    .image-traits-box {
+      margin-top:0.45rem;
+      font-size:0.55rem;
+    }
+    #currentImageTraits {
+      white-space:pre-line;
+      margin-top:0.2rem;
+    }
+
+    .footer {
+      margin-top:1.3rem;
+      text-align:center;
+      font-size:0.55rem;
+      opacity:0.85;
+    }
+
+    /* Menu button (like other pages) */
+    .menu-button {
+      position:fixed;
+      top:1rem;
+      left:1rem;
+      width:44px;
+      height:44px;
+      border-radius:999px;
+      border:2px solid #fff;
+      background:rgba(0,0,0,0.6);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      cursor:pointer;
+      box-shadow:0 0 12px rgba(0,0,0,0.7);
+      z-index:1100;
+    }
+    .menu-button img {
+      width:26px;
+      height:26px;
+      object-fit:contain;
+    }
+
+    #menuMount { position:relative; z-index:1200; }
+
+    /* Modals (trait edit + export order) */
+    .modal-overlay {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.85);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:1300;
+    }
+    .modal-overlay.active { display:flex; }
+
+    .modal {
+      width:100%;
+      max-width:600px;
+      background:rgba(0,0,0,0.96);
+      border-radius:16px;
+      border:1px solid #f4b728;
+      padding:1rem 1.2rem 0.9rem;
+      box-shadow:0 0 24px rgba(0,0,0,0.9);
+      font-size:0.55rem;
+    }
+    .modal-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:0.5rem;
+    }
+    .modal-title {
+      font-size:0.7rem;
+      color:#f4b728;
+    }
+    .modal-close {
+      cursor:pointer;
+      font-size:0.7rem;
+    }
+    .modal-body { margin-top:0.35rem; }
+    .modal-label { font-size:0.55rem; margin-bottom:0.2rem; }
+    .modal-input {
+      width:100%;
+      padding:0.35rem 0.55rem;
+      border-radius:999px;
+      border:2px solid #f4b728;
+      background:rgba(0,0,0,0.9);
+      color:#fff;
+      font-family:"Press Start 2P", monospace;
+      font-size:0.55rem;
+      outline:none;
+      margin-bottom:0.4rem;
+    }
+    .modal-footer {
+      margin-top:0.6rem;
+      display:flex;
+      justify-content:flex-end;
+      gap:0.5rem;
+      flex-wrap:wrap;
+    }
+
+    /* Toasts */
+    .toast-container {
+      position:fixed;
+      right:1rem;
+      bottom:1rem;
+      display:flex;
+      flex-direction:column-reverse;
+      gap:0.45rem;
+      z-index:1400;
+      max-width:360px;
+    }
+    .toast {
+      background:rgba(0,0,0,0.96);
+      border-radius:999px;
+      border:2px solid #f4b728;
+      padding:0.45rem 0.9rem;
+      font-size:0.52rem;
+      display:flex;
+      align-items:flex-start;
+      gap:0.5rem;
+      box-shadow:0 0 12px rgba(0,0,0,0.9);
+      animation:toast-in 0.18s ease-out;
+    }
+    .toast-icon {
+      font-size:0.6rem;
+      margin-top:0.05rem;
+    }
+    .toast-text { line-height:1.5; }
+    .toast-close {
+      margin-left:auto;
+      cursor:pointer;
+      font-size:0.55rem;
+      opacity:0.8;
+    }
+    .toast-success { border-color:#f4b728; }
+    .toast-error { border-color:#f97373; }
+    .toast-info { border-color:#f4b728; }
+    @keyframes toast-in {
+      from { transform:translateY(8px); opacity:0; }
+      to { transform:translateY(0); opacity:1; }
+    }
+
+    @media (max-width: 980px) {
+      .step2-grid {
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="menuMount"></div>
+
+  <div class="app-shell">
+    <div class="frame">
+      <div class="hero">
+        <div class="hero-logo-wrap">
+          <img src="/assets/logo.jpg" alt="Zord logo" />
+        </div>
+        <div class="hero-sub">ZORDINAL TOOLING</div>
+        <div class="hero-title">DEFINE TRAITS</div>
+        <div class="hero-desc">
+          Paint pixels once, auto-detect traits across your collection.
+          Load your images from a local folder, mark a few “fingerprint”
+          pixels for each trait, and let the tool find those traits
+          everywhere. Works great with numbered files like
+          <span class="pill">00001.png</span>
+          <span class="pill">Zord #1.webp</span>
+          or any extension.
+        </div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="section">
+        <div class="section-title">Step 1 — Select collection folder</div>
+        <div class="section-desc">
+          Pick the folder that contains your collection images. We’ll list the
+          files and only decode each image when you view it. Filenames are sorted
+          so <code>00001.png</code>, <code>00002.png</code> etc will appear in order.
+        </div>
+
+        <div class="input-inline">
+          <label for="folderInput">Image folder</label>
+          <input
+            id="folderInput"
+            type="file"
+            webkitdirectory
+            multiple
+            style="font-size:0.55rem;"
+          />
+          <button id="loadFolderBtn" class="btn btn-small">LOAD FOLDER</button>
+        </div>
+        <div id="folderStatus" class="hint">
+          No folder loaded yet.
+        </div>
+        <div class="hint" style="margin-top:0.45rem;">
+          Hint: everything runs locally in your browser. We can see filenames and
+          the files you select, but nothing is uploaded anywhere.
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="step2Section" class="section" style="margin-top:1rem; display:none;">
+        <div class="section-title">Step 2 — Define traits</div>
+        <div class="section-desc" style="margin-bottom:0.35rem;">
+          Click on pixels in the zoomed window to mark them as the “fingerprint”
+          for a trait value. <span class="pill" style="border-color:#f4b728;">Yellow</span>
+          pixels are ones you’ve picked. <span class="pill" style="border-color:#60a5fa;">Blue</span>
+          pixels are automatically detected from templates. Ctrl-click removes a yellow
+          pixel. Max 20 pixels per trait example.
+        </div>
+
+        <div class="step2-grid">
+          <!-- left: preview & picker -->
+          <div class="preview-panel">
+            <div class="preview-title">Image preview</div>
+            <div id="imageInfo" class="preview-sub">
+              No image loaded yet.
+            </div>
+
+            <div class="preview-inner" style="margin-top:0.25rem;">
+              <div class="mini-wrap">
+                <canvas id="miniCanvas" width="180" height="180"></canvas>
+            </div>
+              <div class="zoom-wrap">
+                <canvas id="zoomCanvas" width="200" height="200"></canvas>
+              </div>
+            </div>
+            <div class="image-traits-box">
+                <div class="label-sm">Traits on this image</div>
+                <div id="currentImageTraits" class="hint">
+                  No traits detected on this image yet.
+                </div>
+              </div>
+            <div class="hint" style="margin-top:0.4rem;">
+              1. Click the mini image to move the red selection box.<br/>
+              2. Use the big grid to pick pixels (yellow).<br/>
+              3. Blue pixels show where existing templates already match this image.<br/>
+              Zoom is fixed at 8× for precise pixel selection.
+            </div>
+
+            <div class="controls-row" style="margin-top:0.55rem;">
+              <div class="controls-col" style="flex:1 1 220px;">
+                <div class="label-sm">Trait</div>
+                <div class="trait-input-row">
+                  <input
+                    id="traitTypeInput"
+                    class="input-text"
+                    list="traitTypesList"
+                    placeholder="e.g. Background"
+                    style="flex:1;"
+                  />
+                  <input
+                    id="traitValueInput"
+                    class="input-text"
+                    placeholder="e.g. Zcash Yellow"
+                    style="flex:1;"
+                  />
+                </div>
+                <div class="hint">
+                  Start typing a trait type and we’ll autocomplete with
+                  ones you’ve already used.
+                </div>
+              </div>
+
+              <div class="controls-col" style="min-width:180px;">
+                <button id="saveTraitBtn" class="btn btn-small">SAVE TRAIT</button>
+                <button id="clearPixelsBtn" class="btn btn-small btn-ghost">
+                  CLEAR PIXELS
+                </button>
+                <div class="hint" id="pixelCountHint">
+                  Max 20 yellow pixels per trait example.
+                </div>
+              </div>
+
+              <div class="controls-col" style="min-width:140px; align-items:flex-end;">
+                <button id="prevImgBtn" class="btn btn-small">◀ PREV</button>
+                <button id="nextImgBtn" class="btn btn-small">NEXT ▶</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- right: sidebar -->
+          <div class="sidebar">
+            <div class="sidebar-section-title">Traits so far</div>
+            <div class="hint">
+              This is the global list of traits you’ve defined.
+              Click a value to rename or delete it, or move it to a different
+              trait type. Changes apply across all images.
+            </div>
+
+            <div id="traitsList" class="traits-list"></div>
+
+            <div class="sidebar-block">
+              <div class="sidebar-section-title">Project</div>
+              <div class="hint">
+                Save stores trait templates, pixels, and which image you were on
+                as a JSON file. Load restores everything as long as filenames
+                match your current folder.
+              </div>
+              <div style="margin-top:0.4rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button id="saveProjectBtn" class="btn btn-small">SAVE PROJECT</button>
+                <button id="loadProjectBtn" class="btn btn-small btn-ghost">
+                  LOAD PROJECT
+                </button>
+                <input
+                  id="loadProjectInput"
+                  type="file"
+                  accept=".json"
+                  style="display:none;"
+                />
+              </div>
+            </div>
+
+            <div class="sidebar-block">
+              <div class="sidebar-section-title">Export</div>
+              <div class="hint">
+                Collection name (for export file + token names):
+              </div>
+              <input
+                id="collectionNameInput"
+                class="input-text"
+                placeholder="e.g. Zords"
+                style="margin-top:0.3rem; width:100%;"
+              />
+              <div class="hint" style="margin-top:0.4rem;">
+                When you export we’ll ask for the trait order, optionally let you
+                paste inscription IDs (validated against image count), auto-detect
+                matching traits across all images, and save
+                <span class="pill">collectionName.json</span>.
+              </div>
+              <button
+                id="exportMetadataBtn"
+                class="btn"
+                style="margin-top:0.5rem; width:100%; text-align:center;"
+              >
+                EXPORT METADATA
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        © <span id="yearSpan"></span> Zord.cash • Define Traits
+      </div>
+    </div>
+  </div>
+
+  <!-- datalist for autocomplete -->
+  <datalist id="traitTypesList"></datalist>
+
+  <!-- Trait edit modal -->
+  <div id="editTraitOverlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Edit trait</div>
+        <div class="modal-close" data-close-edit>X</div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-label">Trait type</div>
+        <input id="editTraitTypeInput" class="modal-input" />
+        <div class="modal-label">Trait value</div>
+        <input id="editTraitValueInput" class="modal-input" />
+      </div>
+      <div class="modal-footer">
+        <button id="deleteTraitBtn" class="btn btn-small btn-ghost">
+          DELETE
+        </button>
+        <button class="btn btn-small btn-ghost" data-close-edit>
+          CANCEL
+        </button>
+        <button id="saveTraitEditBtn" class="btn btn-small">
+          SAVE
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export order / inscription IDs modal -->
+  <div id="exportOverlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Export options</div>
+        <div class="modal-close" data-close-export>X</div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-label">
+          1. Choose trait order (top = first in attributes)
+        </div>
+        <div id="orderList" style="
+          max-height:170px;
+          overflow-y:auto;
+          margin:0.35rem 0 0.6rem;
+        "></div>
+
+        <div class="modal-label">
+          2. Optional — paste inscription IDs (one per line or JSON array)
+        </div>
+        <textarea
+          id="exportIdsInput"
+          class="modal-input"
+          style="border-radius:10px; min-height:90px; resize:vertical;"
+          placeholder='00001...i0
+00002...i0
+00003...i0
+
+or ["00001...i0","00002...i0",...]'
+        ></textarea>
+        <div id="exportIdsStatus" class="hint"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-small btn-ghost" data-close-export>
+          CANCEL
+        </button>
+        <button id="exportConfirmBtn" class="btn btn-small">
+          EXPORT
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast mount -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script>
+    /************ tiny helpers ************/
+    const $ = (id) => document.getElementById(id);
+
+    /* global menu import (same pattern as other pages) */
+    async function loadGlobalMenu() {
+      const mount = $("menuMount");
+      if (!mount) return;
+      try {
+        const res = await fetch("/assets-page/menu.html", { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        mount.innerHTML = await res.text();
+        setupImportedMenu();
+      } catch (err) {
+        console.error("Failed to load shared menu:", err);
+      }
+    }
+    function setupImportedMenu() {
+      const menuButton = $("menuButton");
+      const overlay = document.getElementById("sidebarOverlay");
+      const closeBtn = document.getElementById("sidebarClose");
+      if (!menuButton || !overlay || !closeBtn) return;
+      const close = () => overlay.classList.remove("active");
+      menuButton.addEventListener("click", () => overlay.classList.add("active"));
+      closeBtn.addEventListener("click", close);
+      overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
+    }
+
+    /************ Toasts ************/
+    const toastContainer = $("toastContainer");
+    let toastIdCounter = 0;
+    function showToast(message, type = "info") {
+      if (!toastContainer) return;
+      const id = "toast-" + (++toastIdCounter);
+      const toast = document.createElement("div");
+      toast.className = "toast toast-" + type;
+      toast.id = id;
+
+      const iconSpan = document.createElement("span");
+      iconSpan.className = "toast-icon";
+      iconSpan.textContent = type === "error" ? "!" : type === "success" ? "✓" : "i";
+
+      const textSpan = document.createElement("span");
+      textSpan.className = "toast-text";
+      textSpan.textContent = message;
+
+      const closeSpan = document.createElement("span");
+      closeSpan.className = "toast-close";
+      closeSpan.textContent = "×";
+      closeSpan.addEventListener("click", () => toast.remove());
+
+      toast.appendChild(iconSpan);
+      toast.appendChild(textSpan);
+      toast.appendChild(closeSpan);
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        if (toast.parentNode) toast.remove();
+      }, 5000);
+    }
+
+    /************ Data structures ************/
+    class TraitManager {
+      constructor() {
+        this.traitMap = {};   // type -> Set(values)
+        this.templates = {};  // type -> value -> { positions:[{x,y}], rgba:[[r,g,b,a]], hex:[str] }
+      }
+      normaliseType(t) {
+        const s = (t || "").trim();
+        if (!s) return "";
+        return s.charAt(0).toUpperCase() + s.slice(1);
+      }
+      getTraitTypes() {
+        return Object.keys(this.traitMap);
+      }
+      addTrait(type, value, positions, rgbaList) {
+        type = this.normaliseType(type);
+        if (!type || !value) return;
+        if (!this.traitMap[type]) this.traitMap[type] = new Set();
+        this.traitMap[type].add(value);
+
+        if (!this.templates[type]) this.templates[type] = {};
+        this.templates[type][value] = {
+          positions: positions.map(p => ({ x: p.x, y: p.y })),
+          rgba: rgbaList.map(c => [c[0], c[1], c[2], c[3]]),
+          hex: rgbaList.map(c => rgbaToHex(c))
+        };
+      }
+      renameTrait(oldType, oldValue, newType, newValue, images) {
+        oldType = this.normaliseType(oldType);
+        newType = this.normaliseType(newType);
+        if (!oldType || !newType) return;
+
+        if (!this.traitMap[oldType]) return;
+        if (!this.traitMap[newType]) this.traitMap[newType] = new Set();
+        this.traitMap[newType].add(newValue);
+
+        if (this.traitMap[oldType].has(oldValue)) {
+          this.traitMap[oldType].delete(oldValue);
+          if (this.traitMap[oldType].size === 0) delete this.traitMap[oldType];
+        }
+
+        if (this.templates[oldType] && this.templates[oldType][oldValue]) {
+          const tmpl = this.templates[oldType][oldValue];
+          if (!this.templates[newType]) this.templates[newType] = {};
+          this.templates[newType][newValue] = tmpl;
+          delete this.templates[oldType][oldValue];
+          if (Object.keys(this.templates[oldType]).length === 0) {
+            delete this.templates[oldType];
+          }
+        }
+
+        const oldKey = `${oldType}_${oldValue}`;
+        const newKey = `${newType}_${newValue}`;
+        images.forEach(entry => {
+          if (entry.traits[oldType] === oldValue) {
+            delete entry.traits[oldType];
+            entry.traits[newType] = newValue;
+          }
+          if (entry.pixelPoints[oldKey]) {
+            entry.pixelPoints[newKey] = entry.pixelPoints[oldKey];
+            delete entry.pixelPoints[oldKey];
+          }
+        });
+      }
+      deleteTrait(type, value, images) {
+        type = this.normaliseType(type);
+        if (!type) return;
+
+        if (this.traitMap[type]) {
+          this.traitMap[type].delete(value);
+          if (this.traitMap[type].size === 0) delete this.traitMap[type];
+        }
+        if (this.templates[type] && this.templates[type][value]) {
+          delete this.templates[type][value];
+          if (Object.keys(this.templates[type]).length === 0) {
+            delete this.templates[type];
+          }
+        }
+        const key = `${type}_${value}`;
+        images.forEach(entry => {
+          if (entry.traits[type] === value) delete entry.traits[type];
+          if (entry.pixelPoints[key]) delete entry.pixelPoints[key];
+        });
+      }
+      serializeTemplates() {
+        const out = {};
+        for (const t in this.templates) {
+          out[t] = {};
+          for (const v in this.templates[t]) {
+            const tmpl = this.templates[t][v];
+            out[t][v] = {
+              positions: tmpl.positions.map(p => ({ x: p.x, y: p.y })),
+              rgba: tmpl.rgba.map(c => [c[0], c[1], c[2], c[3]]),
+              hex: tmpl.hex.slice()
+            };
+          }
+        }
+        return out;
+      }
+      loadTemplates(data) {
+        this.templates = {};
+        for (const t in data || {}) {
+          this.templates[t] = {};
+          for (const v in data[t]) {
+            const tmpl = data[t][v];
+            this.templates[t][v] = {
+              positions: (tmpl.positions || []).map(p => ({ x: p.x, y: p.y })),
+              rgba: (tmpl.rgba || []).map(c => [c[0], c[1], c[2], c[3]]),
+              hex: (tmpl.hex || []).slice()
+            };
+          }
+        }
+      }
+    }
+
+    class ImageEntry {
+      constructor(file) {
+        this.file = file;
+        this.name = file.name;
+        this.url = null;       // object URL
+        this.img = null;       // HTMLImageElement
+        this.imageData = null; // ImageData for full image
+        this.width = 0;
+        this.height = 0;
+        this.traits = {};      // type -> value
+        this.pixelPoints = {}; // `${type}_${value}` -> [{x,y}]
+        this.autoPositions = new Set(); // string "x,y"
+        this.autoTraitRegions = {};     // key -> {minX,minY,maxX,maxY}
+      }
+    }
+
+    function rgbaToHex(rgba) {
+      const [r,g,b] = rgba;
+      return "#" +
+        r.toString(16).padStart(2,"0") +
+        g.toString(16).padStart(2,"0") +
+        b.toString(16).padStart(2,"0");
+    }
+
+    function parseIdList(raw) {
+      const text = (raw || "").trim();
+      if (!text) return [];
+      try {
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed)) {
+          return parsed.map(v => typeof v === "string" ? v.trim() : "").filter(Boolean);
+        }
+      } catch(e) { /* fall through */ }
+      return text.split(/[\r\n,]+/).map(v => v.trim()).filter(Boolean);
+    }
+
+    /************ main app state ************/
+    const tm = new TraitManager();
+    let images = [];         // array of ImageEntry
+    let currentIndex = 0;
+
+    const miniCanvas = $("miniCanvas");
+    const miniCtx = miniCanvas.getContext("2d");
+    const zoomCanvas = $("zoomCanvas");
+    const zoomCtx = zoomCanvas.getContext("2d");
+
+    // selection window in image pixel coords
+    const REGION_SIZE = 20;
+    const CELL_SIZE = 20; // zoomed cell size (slightly bigger grid)
+    let regionX = 0;
+    let regionY = 0;
+    let miniScale = 1;
+    let miniOffX = 0;
+    let miniOffY = 0;
+
+    // current manual selection (Set of "x,y")
+    const selectedPixels = new Set();
+    let maxPixelToastShown = false;
+    const MAX_PIXELS = 20;
+
+    let editTraitContext = null; // { type, value }
+
+// export modal state
+    let exportTraitTypes = [];
+
+    function refreshOrderSelectOptions() {
+    if (!exportTraitTypes.length) return;
+
+    const selects = Array.from(
+        document.querySelectorAll("#orderList select[data-order-select]")
+    );
+
+    selects.forEach(sel => {
+        const currentVal = (sel.value || "").trim();
+
+        // which types are used in *other* selects
+        const usedElsewhere = new Set();
+        selects.forEach(other => {
+        if (other === sel) return;
+        const v = (other.value || "").trim();
+        if (v) usedElsewhere.add(v);
+        });
+
+        // rebuild options
+        const previous = currentVal;
+        sel.innerHTML = "";
+
+        const optBlank = document.createElement("option");
+        optBlank.value = "";
+        optBlank.textContent = "(none)";
+        sel.appendChild(optBlank);
+
+        exportTraitTypes.forEach(t => {
+        if (t === previous || !usedElsewhere.has(t)) {
+            const o = document.createElement("option");
+            o.value = t;
+            o.textContent = t;
+            sel.appendChild(o);
+        }
+        });
+
+        // restore previous choice if still valid, otherwise keep whatever is selected
+        sel.value = previous || "";
+    });
+    }
+
+
+    /************ image loading helpers ************/
+    function ensureImageLoaded(entry) {
+      return new Promise((resolve, reject) => {
+        if (entry.img && entry.width && entry.height) {
+          resolve(entry);
+          return;
+        }
+        if (!entry.url) {
+          entry.url = URL.createObjectURL(entry.file);
+        }
+        const img = new Image();
+        img.onload = () => {
+          entry.img = img;
+          entry.width = img.naturalWidth;
+          entry.height = img.naturalHeight;
+          resolve(entry);
+        };
+        img.onerror = reject;
+        img.src = entry.url;
+      });
+    }
+
+    function ensureImageData(entry) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          await ensureImageLoaded(entry);
+          if (entry.imageData) {
+            resolve(entry.imageData);
+            return;
+          }
+          const off = document.createElement("canvas");
+          off.width = entry.width;
+          off.height = entry.height;
+          const ctx = off.getContext("2d");
+          ctx.imageSmoothingEnabled = false;
+          ctx.drawImage(entry.img, 0, 0);
+          entry.imageData = ctx.getImageData(0, 0, entry.width, entry.height);
+          resolve(entry.imageData);
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+
+    /************ rendering ************/
+    function clearSelection() {
+      selectedPixels.clear();
+      maxPixelToastShown = false;
+      updatePixelCountHint();
+      drawZoomRegion();
+    }
+
+    function updatePixelCountHint() {
+      const hint = $("pixelCountHint");
+      hint.textContent =
+        `Selected ${selectedPixels.size} pixel(s). Max ${MAX_PIXELS} per trait example.`;
+    }
+
+    function updateCurrentImageTraits() {
+      const el = $("currentImageTraits");
+      if (!images.length) {
+        el.textContent = "No traits detected on this image yet.";
+        return;
+      }
+      const entry = images[currentIndex];
+      const traits = entry.traits || {};
+      const keys = Object.keys(traits);
+      if (!keys.length) {
+        el.textContent = "No traits detected on this image yet.";
+        return;
+      }
+      const lines = keys.sort().map(k => `[${k}] ${traits[k]}`);
+      el.textContent = lines.join("\n");
+    }
+
+    async function showImage(index) {
+      if (!images.length) return;
+      currentIndex = Math.max(0, Math.min(index, images.length - 1));
+      const entry = images[currentIndex];
+
+      try {
+        await ensureImageLoaded(entry);
+      } catch (e) {
+        console.error("load image failed", e);
+        showToast("Failed to load image.", "error");
+        return;
+      }
+
+      // update header text
+      $("imageInfo").textContent =
+        `Editing traits for ${currentIndex + 1} / ${images.length} — ${entry.name}`;
+
+      // center region on middle of image on first show
+      regionX = Math.max(
+        0,
+        Math.min(regionX || Math.floor((entry.width - REGION_SIZE)/2), entry.width - REGION_SIZE)
+      );
+      regionY = Math.max(
+        0,
+        Math.min(regionY || Math.floor((entry.height - REGION_SIZE)/2), entry.height - REGION_SIZE)
+      );
+
+      await detectAutoPositions(entry);
+      drawMini(entry);
+      clearSelection(); // clears zoom & re-renders
+      updateCurrentImageTraits();
+    }
+
+    function drawTraitRegionsOnMini(entry) {
+      const regions = [];
+
+      // from per-image pixelPoints
+      for (const key in entry.pixelPoints) {
+        const pts = entry.pixelPoints[key];
+        if (!pts || !pts.length) continue;
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        pts.forEach(p => {
+          if (p.x < minX) minX = p.x;
+          if (p.y < minY) minY = p.y;
+          if (p.x > maxX) maxX = p.x;
+          if (p.y > maxY) maxY = p.y;
+        });
+        if (minX <= maxX && minY <= maxY) {
+          regions.push({ minX, minY, maxX, maxY });
+        }
+      }
+
+      // from auto-detected trait regions
+      for (const key in entry.autoTraitRegions) {
+        const r = entry.autoTraitRegions[key];
+        if (!r) continue;
+        if (Number.isFinite(r.minX) && Number.isFinite(r.minY) &&
+            Number.isFinite(r.maxX) && Number.isFinite(r.maxY)) {
+          regions.push(r);
+        }
+      }
+
+      if (!regions.length) return;
+
+      miniCtx.save();
+      miniCtx.strokeStyle = "#f4b728";
+      miniCtx.lineWidth = 2;
+      miniCtx.globalAlpha = 0.85;
+
+      regions.forEach(r => {
+        const x0 = miniOffX + r.minX * miniScale;
+        const y0 = miniOffY + r.minY * miniScale;
+        const w = (r.maxX - r.minX + 1) * miniScale;
+        const h = (r.maxY - r.minY + 1) * miniScale;
+        miniCtx.strokeRect(x0 + 0.5, y0 + 0.5, w, h);
+      });
+
+      miniCtx.restore();
+    }
+
+    function drawMini(entry) {
+      const w = entry.width;
+      const h = entry.height;
+      const cw = miniCanvas.width;
+      const ch = miniCanvas.height;
+
+      miniCtx.clearRect(0,0,cw,ch);
+      miniCtx.save();
+      miniCtx.fillStyle = "#000";
+      miniCtx.fillRect(0,0,cw,ch);
+
+      miniScale = Math.min(cw / w, ch / h);
+      const drawW = w * miniScale;
+      const drawH = h * miniScale;
+      miniOffX = (cw - drawW) / 2;
+      miniOffY = (ch - drawH) / 2;
+
+      miniCtx.imageSmoothingEnabled = false;
+      miniCtx.drawImage(entry.img, miniOffX, miniOffY, drawW, drawH);
+
+      // draw trait regions (yellow boxes)
+      drawTraitRegionsOnMini(entry);
+
+      // draw selection rectangle
+      miniCtx.strokeStyle = "#f4b728";
+      miniCtx.lineWidth = 2;
+      const sx = miniOffX + regionX * miniScale;
+      const sy = miniOffY + regionY * miniScale;
+      const sw = REGION_SIZE * miniScale;
+      const sh = REGION_SIZE * miniScale;
+      miniCtx.strokeRect(sx + 0.5, sy + 0.5, sw, sh);
+      miniCtx.restore();
+    }
+
+    function drawZoomRegion() {
+      zoomCtx.clearRect(0,0,zoomCanvas.width, zoomCanvas.height);
+      if (!images.length) return;
+      const entry = images[currentIndex];
+      if (!entry.img) return;
+
+      const size = REGION_SIZE;
+      const srcX = regionX;
+      const srcY = regionY;
+
+      // draw cropped region scaled up
+      const destW = size * CELL_SIZE;
+      const destH = size * CELL_SIZE;
+      zoomCanvas.width = destW;
+      zoomCanvas.height = destH;
+
+      zoomCtx.save();
+      zoomCtx.imageSmoothingEnabled = false;
+      zoomCtx.drawImage(
+        entry.img,
+        srcX, srcY, size, size,
+        0, 0, destW, destH
+      );
+
+      // draw grid
+      zoomCtx.strokeStyle = "rgba(0,0,0,0.55)";
+      zoomCtx.lineWidth = 1;
+      for (let x = 0; x <= destW; x += CELL_SIZE) {
+        zoomCtx.beginPath();
+        zoomCtx.moveTo(x + 0.5, 0);
+        zoomCtx.lineTo(x + 0.5, destH);
+        zoomCtx.stroke();
+      }
+      for (let y = 0; y <= destH; y += CELL_SIZE) {
+        zoomCtx.beginPath();
+        zoomCtx.moveTo(0, y + 0.5);
+        zoomCtx.lineTo(destW, y + 0.5);
+        zoomCtx.stroke();
+      }
+
+      // auto-detected (blue)
+      zoomCtx.fillStyle = "rgba(96,165,250,0.7)";
+      zoomCtx.strokeStyle = "#60a5fa";
+      zoomCtx.lineWidth = 1.2;
+      entry.autoPositions.forEach(key => {
+        const [px, py] = key.split(",").map(Number);
+        if (
+          px >= regionX && px < regionX + REGION_SIZE &&
+          py >= regionY && py < regionY + REGION_SIZE
+        ) {
+          const cx = (px - regionX) * CELL_SIZE;
+          const cy = (py - regionY) * CELL_SIZE;
+          zoomCtx.fillRect(cx+1, cy+1, CELL_SIZE-2, CELL_SIZE-2);
+          zoomCtx.strokeRect(cx+0.5, cy+0.5, CELL_SIZE-1, CELL_SIZE-1);
+        }
+      });
+
+      // manual selected (yellow)
+      zoomCtx.fillStyle = "rgba(244,183,40,0.7)";
+      zoomCtx.strokeStyle = "#f4b728";
+      zoomCtx.lineWidth = 2;
+      selectedPixels.forEach(key => {
+        const [px, py] = key.split(",").map(Number);
+        if (
+          px >= regionX && px < regionX + REGION_SIZE &&
+          py >= regionY && py < regionY + REGION_SIZE
+        ) {
+          const cx = (px - regionX) * CELL_SIZE;
+          const cy = (py - regionY) * CELL_SIZE;
+          zoomCtx.fillRect(cx+1, cy+1, CELL_SIZE-2, CELL_SIZE-2);
+          zoomCtx.strokeRect(cx+1.5, cy+1.5, CELL_SIZE-3, CELL_SIZE-3);
+        }
+      });
+
+      zoomCtx.restore();
+      updatePixelCountHint();
+    }
+
+    /************ interaction ************/
+    miniCanvas.addEventListener("click", (e) => {
+      if (!images.length) return;
+      const entry = images[currentIndex];
+      const rect = miniCanvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const px = Math.floor((x - miniOffX) / miniScale);
+      const py = Math.floor((y - miniOffY) / miniScale);
+      if (isNaN(px) || isNaN(py)) return;
+
+      const clampedX = Math.max(0, Math.min(px, entry.width - 1));
+      const clampedY = Math.max(0, Math.min(py, entry.height - 1));
+      regionX = Math.max(0, Math.min(clampedX - Math.floor(REGION_SIZE/2), entry.width - REGION_SIZE));
+      regionY = Math.max(0, Math.min(clampedY - Math.floor(REGION_SIZE/2), entry.height - REGION_SIZE));
+
+      drawMini(entry);
+      drawZoomRegion();
+    });
+
+    zoomCanvas.addEventListener("click", (e) => {
+      if (!images.length) return;
+      const entry = images[currentIndex];
+
+      const rect = zoomCanvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const col = Math.floor(x / CELL_SIZE);
+      const row = Math.floor(y / CELL_SIZE);
+      if (col < 0 || col >= REGION_SIZE || row < 0 || row >= REGION_SIZE) return;
+
+      const px = regionX + col;
+      const py = regionY + row;
+
+      const key = `${px},${py}`;
+
+      // ctrl-click to remove
+      if (e.ctrlKey || e.metaKey) {
+        if (selectedPixels.has(key)) {
+          selectedPixels.delete(key);
+          maxPixelToastShown = false;
+        }
+      } else {
+        if (!selectedPixels.has(key)) {
+          if (selectedPixels.size >= MAX_PIXELS) {
+            if (!maxPixelToastShown) {
+              showToast("Max 20 pixels per trait. Clear some before adding more.", "info");
+              maxPixelToastShown = true;
+            }
+          } else {
+            selectedPixels.add(key);
+          }
+        }
+      }
+      drawZoomRegion();
+    });
+
+    $("clearPixelsBtn").addEventListener("click", () => {
+      clearSelection();
+    });
+
+    $("prevImgBtn").addEventListener("click", () => {
+      if (!images.length) return;
+      const next = currentIndex - 1;
+      if (next >= 0) showImage(next);
+    });
+    $("nextImgBtn").addEventListener("click", () => {
+      if (!images.length) return;
+      const next = currentIndex + 1;
+      if (next < images.length) showImage(next);
+    });
+
+    /************ auto detection ************/
+    function pixelsMatch(a, b, tol=5) {
+      const [r1,g1,b1] = a;
+      const [r2,g2,b2] = b;
+      return (
+        Math.abs(r1-r2) <= tol &&
+        Math.abs(g1-g2) <= tol &&
+        Math.abs(b1-b2) <= tol
+      );
+    }
+
+    async function imageMatchesTemplate(entry, tmpl, tol=5) {
+      const data = await ensureImageData(entry);
+      const w = entry.width;
+      for (let i=0; i<tmpl.positions.length; i++) {
+        const { x, y } = tmpl.positions[i];
+        if (x < 0 || y < 0 || x >= w || y >= entry.height) return false;
+        const idx = (y * w + x) * 4;
+        const rgba = [
+          data.data[idx],
+          data.data[idx+1],
+          data.data[idx+2],
+          data.data[idx+3]
+        ];
+        if (!pixelsMatch(rgba, tmpl.rgba[i], tol)) return false;
+      }
+      return true;
+    }
+
+    async function detectAutoPositions(entry) {
+      entry.autoPositions.clear();
+      entry.autoTraitRegions = {};
+      const types = Object.keys(tm.templates);
+      if (!types.length) return;
+      for (const t of types) {
+        const valueMap = tm.templates[t];
+        for (const v in valueMap) {
+          const tmpl = valueMap[v];
+          const match = await imageMatchesTemplate(entry, tmpl, 5);
+          if (match) {
+            const key = `${t}_${v}`;
+            let region = entry.autoTraitRegions[key] || {
+              minX: Infinity,
+              minY: Infinity,
+              maxX: -Infinity,
+              maxY: -Infinity
+            };
+            tmpl.positions.forEach(p => {
+              entry.autoPositions.add(`${p.x},${p.y}`);
+              if (p.x < region.minX) region.minX = p.x;
+              if (p.y < region.minY) region.minY = p.y;
+              if (p.x > region.maxX) region.maxX = p.x;
+              if (p.y > region.maxY) region.maxY = p.y;
+            });
+            entry.autoTraitRegions[key] = region;
+            // also record trait if not already present
+            if (!entry.traits[t]) entry.traits[t] = v;
+          }
+        }
+      }
+    }
+
+    async function autoAssignAllTraits() {
+      for (const entry of images) {
+        await detectAutoPositions(entry);
+      }
+    }
+
+    /************ trait saving ************/
+    $("saveTraitBtn").addEventListener("click", async () => {
+      if (!images.length) return;
+      const entry = images[currentIndex];
+      const typeRaw = $("traitTypeInput").value.trim();
+      const value = $("traitValueInput").value.trim();
+      if (!typeRaw || !value) {
+        showToast("Enter a trait type and value first.", "info");
+        return;
+      }
+      if (!selectedPixels.size) {
+        showToast("Select at least one pixel for this trait.", "info");
+        return;
+      }
+      const type = tm.normaliseType(typeRaw);
+
+      const positions = [];
+      selectedPixels.forEach(key => {
+        const [x,y] = key.split(",").map(Number);
+        positions.push({ x, y });
+      });
+
+      const rgbaList = [];
+      try {
+        const data = await ensureImageData(entry);
+        const w = entry.width;
+        for (const p of positions) {
+          const idx = (p.y * w + p.x) * 4;
+          rgbaList.push([
+            data.data[idx],
+            data.data[idx+1],
+            data.data[idx+2],
+            data.data[idx+3]
+          ]);
+        }
+      } catch (e) {
+        console.error(e);
+        showToast("Could not sample pixel colours.", "error");
+        return;
+      }
+
+      tm.addTrait(type, value, positions, rgbaList);
+
+      // per-image assignment
+      entry.traits[type] = value;
+      entry.pixelPoints[`${type}_${value}`] = positions.map(p => ({ x:p.x, y:p.y }));
+
+      $("traitTypeInput").value = "";
+      $("traitValueInput").value = "";
+      clearSelection();
+      refreshTraitUI();
+      drawMini(entry); // update mini trait regions
+      updateCurrentImageTraits();
+      showToast(`Saved trait ${type}: ${value}`, "success");
+    });
+
+    function refreshTraitUI() {
+      const list = $("traitsList");
+      list.innerHTML = "";
+      const types = tm.getTraitTypes().sort();
+      const dl = $("traitTypesList");
+      dl.innerHTML = "";
+
+      types.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t;
+        dl.appendChild(opt);
+
+        const typeDiv = document.createElement("div");
+        typeDiv.className = "trait-type-label";
+        typeDiv.textContent = `[${t}]`;
+        list.appendChild(typeDiv);
+
+        const values = Array.from(tm.traitMap[t] || []).sort();
+        values.forEach(v => {
+          const valDiv = document.createElement("div");
+          valDiv.className = "trait-value";
+          valDiv.textContent = v;
+          valDiv.dataset.type = t;
+          valDiv.dataset.value = v;
+          valDiv.addEventListener("click", () => openEditTraitModal(t, v));
+          list.appendChild(valDiv);
+        });
+      });
+    }
+
+    /************ trait edit modal ************/
+    function openEditTraitModal(type, value) {
+      editTraitContext = { type, value };
+      $("editTraitTypeInput").value = type;
+      $("editTraitValueInput").value = value;
+      $("editTraitOverlay").classList.add("active");
+    }
+    function closeEditTraitModal() {
+      $("editTraitOverlay").classList.remove("active");
+      editTraitContext = null;
+    }
+    document.querySelectorAll("[data-close-edit]").forEach(el => {
+      el.addEventListener("click", closeEditTraitModal);
+    });
+
+    $("saveTraitEditBtn").addEventListener("click", () => {
+      if (!editTraitContext) return;
+      const oldType = editTraitContext.type;
+      const oldValue = editTraitContext.value;
+      const newType = $("editTraitTypeInput").value.trim();
+      const newValue = $("editTraitValueInput").value.trim();
+      if (!newType || !newValue) {
+        showToast("Trait type and value can’t be empty.", "info");
+        return;
+      }
+      tm.renameTrait(oldType, oldValue, newType, newValue, images);
+      refreshTraitUI();
+      updateCurrentImageTraits();
+      closeEditTraitModal();
+      showToast("Trait updated.", "success");
+    });
+
+    $("deleteTraitBtn").addEventListener("click", () => {
+      if (!editTraitContext) return;
+      const { type, value } = editTraitContext;
+      tm.deleteTrait(type, value, images);
+      refreshTraitUI();
+      updateCurrentImageTraits();
+      closeEditTraitModal();
+      showToast("Trait deleted.", "info");
+    });
+
+    /************ folder load ************/
+    $("loadFolderBtn").addEventListener("click", () => {
+      const input = $("folderInput");
+      const files = Array.from(input.files || []);
+      if (!files.length) {
+        showToast("Choose a folder first.", "info");
+        return;
+      }
+      const imageFiles = files.filter(f =>
+        /\.(png|jpe?g|webp)$/i.test(f.name)
+      );
+      if (!imageFiles.length) {
+        showToast("No PNG/JPG/WEBP files in that folder.", "error");
+        return;
+      }
+
+      imageFiles.sort((a,b) => a.name.localeCompare(b.name, undefined, { numeric:true }));
+      images = imageFiles.map(f => new ImageEntry(f));
+      currentIndex = 0;
+      $("folderStatus").textContent =
+        `Loaded ${images.length} image(s) from folder.`;
+      $("step2Section").style.display = "block";
+
+      // reset state
+      tm.traitMap = {};
+      tm.templates = {};
+      refreshTraitUI();
+      clearSelection();
+
+      showImage(0);
+      showToast(`Loaded ${images.length} images.`, "success");
+    });
+
+    /************ project save/load ************/
+    $("saveProjectBtn").addEventListener("click", () => {
+      if (!images.length) {
+        showToast("Load a folder first.", "info");
+        return;
+      }
+      const data = {
+        traits: Object.fromEntries(
+          Object.entries(tm.traitMap).map(([k,set]) => [k, Array.from(set)])
+        ),
+        templates: tm.serializeTemplates(),
+        images: images.map(e => ({
+          name: e.name,
+          traits: e.traits,
+          pixelPoints: e.pixelPoints
+        })),
+        lastIndex: currentIndex
+      };
+      const blob = new Blob([JSON.stringify(data,null,2)], { type:"application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "traits-project.json";
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(a.href);
+      a.remove();
+      showToast("Project saved as traits-project.json", "success");
+    });
+
+    $("loadProjectBtn").addEventListener("click", () => {
+      $("loadProjectInput").click();
+    });
+    $("loadProjectInput").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (!images.length) {
+        showToast("Load a folder of images first, then load the project.", "info");
+        return;
+      }
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        tm.traitMap = {};
+        for (const k in (data.traits || {})) {
+          tm.traitMap[k] = new Set(data.traits[k]);
+        }
+        tm.loadTemplates(data.templates || {});
+        const byName = new Map(images.map(e => [e.name, e]));
+        (data.images || []).forEach(saved => {
+          const entry = byName.get(saved.name);
+          if (entry) {
+            entry.traits = saved.traits || {};
+            entry.pixelPoints = saved.pixelPoints || {};
+          }
+        });
+        currentIndex = data.lastIndex || 0;
+        currentIndex = Math.max(0, Math.min(currentIndex, images.length-1));
+        refreshTraitUI();
+        await showImage(currentIndex);
+        showToast("Project loaded.", "success");
+      } catch (err) {
+        console.error(err);
+        showToast("Failed to load project JSON.", "error");
+      }
+    });
+
+    /************ export metadata ************/
+    $("exportMetadataBtn").addEventListener("click", () => {
+      if (!images.length) {
+        showToast("Load a folder of images first.", "info");
+        return;
+      }
+      const name = $("collectionNameInput").value.trim();
+      if (!name) {
+        showToast("Enter a collection name first.", "info");
+        return;
+      }
+      openExportModal();
+    });
+
+    function openExportModal() {
+      const traitTypes = tm.getTraitTypes().sort();
+      exportTraitTypes = traitTypes.slice(); // store for dropdown rebuilding
+
+      const orderList = $("orderList");
+      orderList.innerHTML = "";
+
+      if (!traitTypes.length) {
+        const p = document.createElement("div");
+        p.className = "hint";
+        p.textContent = "No traits defined yet. We can still export with empty attributes.";
+        orderList.appendChild(p);
+      } else {
+        traitTypes.forEach((t, idx) => {
+          const row = document.createElement("div");
+          row.style.display = "flex";
+          row.style.alignItems = "center";
+          row.style.gap = "0.4rem";
+          row.style.marginBottom = "0.25rem";
+
+          const label = document.createElement("span");
+          label.textContent = `${idx + 1}.`;
+          label.style.fontSize = "0.55rem";
+
+          const select = document.createElement("select");
+          select.className = "modal-input";
+          select.style.marginBottom = "0";
+          select.dataset.orderSelect = "1";
+
+          // basic options; we’ll refine with refreshOrderSelectOptions
+          const optBlank = document.createElement("option");
+          optBlank.value = "";
+          optBlank.textContent = "(none)";
+          select.appendChild(optBlank);
+
+          traitTypes.forEach(tt => {
+            const o = document.createElement("option");
+            o.value = tt;
+            o.textContent = tt;
+            select.appendChild(o);
+          });
+
+          // default to this trait for this row
+          select.value = t;
+
+          select.addEventListener("change", () => {
+            refreshOrderSelectOptions();
+          });
+
+          row.appendChild(label);
+          row.appendChild(select);
+          orderList.appendChild(row);
+        });
+
+        const hint = document.createElement("div");
+        hint.className = "hint";
+        hint.textContent = "Choose the layer order using the dropdowns. Each one can only be used once.";
+        orderList.appendChild(hint);
+
+        // ensure no duplicates across dropdowns
+        refreshOrderSelectOptions();
+      }
+
+      $("exportIdsInput").value = "";
+      $("exportIdsStatus").textContent = "";
+      $("exportOverlay").classList.add("active");
+    }
+  
+
+    function closeExportModal() {
+      $("exportOverlay").classList.remove("active");
+    }
+    document.querySelectorAll("[data-close-export]").forEach(el => {
+      el.addEventListener("click", closeExportModal);
+    });
+    $("exportConfirmBtn").addEventListener("click", async () => {
+      if (!images.length) return;
+      const collectionName = $("collectionNameInput").value.trim() || "Collection";
+
+      // gather order from dropdowns
+      const selects = Array.from(
+        $("orderList").querySelectorAll("select[data-order-select]")
+      );
+      const order = [];
+      selects.forEach(sel => {
+        const v = (sel.value || "").trim();
+        if (v && !order.includes(v)) order.push(v);
+      });
+
+      // parse inscription IDs
+      const rawIds = $("exportIdsInput").value;
+      const ids = parseIdList(rawIds);
+      const idStatus = $("exportIdsStatus");
+      idStatus.textContent = "";
+
+      // if any IDs entered, they must match image count (for safe merging)
+      if (ids.length) {
+        if (ids.length !== images.length) {
+          idStatus.textContent =
+            `Error: you pasted ${ids.length} IDs, but there are ${images.length} images. ` +
+            `Please provide exactly one inscription ID per image, or clear the field.`;
+          showToast("Inscription ID count must match image count for merging.", "error");
+          return;
+        }
+      }
+
+      // auto-assign traits everywhere based on templates
+      await autoAssignAllTraits();
+
+      // build output
+      const out = [];
+      const sortedEntries = images.slice().sort((a,b) =>
+        a.name.localeCompare(b.name, undefined, { numeric:true })
+      );
+
+      sortedEntries.forEach((entry, idx) => {
+        const attrsOrdered = {};
+        // ordered trait types first
+        order.forEach(t => {
+          if (entry.traits[t] != null) attrsOrdered[t] = entry.traits[t];
+        });
+        // then any remaining traits
+        Object.keys(entry.traits || {}).forEach(t => {
+          if (!(t in attrsOrdered)) attrsOrdered[t] = entry.traits[t];
+        });
+
+        out.push({
+          name: `${collectionName}#${idx + 1}`,
+          inscription_id: ids[idx] || "",
+          attributes: attrsOrdered
+        });
+      });
+
+      const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      const safeName = collectionName.replace(/[^a-z0-9_-]+/gi,"_");
+      a.href = URL.createObjectURL(blob);
+      a.download = `${safeName}.json`;
+      document.body.appendChild(a);
+      a.click();
+      URL.revokeObjectURL(a.href);
+      a.remove();
+
+      closeExportModal();
+      showToast(`Exported ${safeName}.json`, "success");
+    });
+
+
+    /************ init ************/
+    document.addEventListener("DOMContentLoaded", () => {
+      const yearSpan = $("yearSpan");
+      if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+      loadGlobalMenu();
+      refreshTraitUI();
+      updatePixelCountHint();
+      updateCurrentImageTraits();
+    });
+  </script>
+</body>
+</html>

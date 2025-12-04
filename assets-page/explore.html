@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Zordinals Explorer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family: 'Press Start 2P', cursive;
+        background-image: url('/assets/bg.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #fff;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .app-container {
+        width: 100%;
+        max-width: 1100px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        border: 1px solid #F4B728;
+        border-radius: 16px;
+      }
+
+      /* (Legacy menu styles are harmless if present; actual menu is loaded from /assets-page/menu.html) */
+      .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: flex-end;
+        z-index: 1200;
+      }
+
+      .sidebar-overlay.active {
+        display: flex;
+      }
+
+      .sidebar {
+        width: 260px;
+        max-width: 80vw;
+        background: rgba(10, 10, 10, 0.95);
+        box-shadow: -4px 0 16px rgba(0, 0, 0, 0.8);
+        border-left: 2px solid rgba(255, 255, 255, 0.25);
+        padding: 1.5rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        animation: slideIn 0.25s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0%);
+          opacity: 1;
+        }
+      }
+
+      .sidebar-title {
+        font-size: 0.8rem;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px #000;
+      }
+
+      .sidebar-close {
+        cursor: pointer;
+        font-size: 0.9rem;
+        margin-left: auto;
+        margin-bottom: 0.5rem;
+        opacity: 0.8;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .sidebar-menu a {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.7rem;
+        border-radius: 999px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        background: rgba(40, 40, 40, 0.9);
+        color: #fff;
+        cursor: pointer;
+        text-shadow: 1px 1px 2px #000;
+        letter-spacing: 0.08em;
+        transition: transform 0.1s ease, box-shadow 0.1s ease,
+          background 0.1s ease;
+        text-decoration: none;
+      }
+
+      .sidebar-menu a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+        background: rgba(60, 60, 60, 0.9);
+      }
+
+      /* CARD SHELL */
+
+      .content-card {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.85);
+        border: 2px solid rgba(255, 255, 255, 0.15);
+      }
+
+      /* HEADER */
+
+      .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .hero-logo-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .round-logo {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background-color: rgba(255, 215, 0, 0.2);
+        border: 4px solid #F4B728;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .round-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+      .site-title-small {
+        padding: 10px;
+        font-size: 0.8rem;
+        text-shadow: 2px 2px 4px #111;
+        letter-spacing: 0.08em;
+      }
+
+      .main-title {
+        font-size: 1.3rem;
+        text-align: center;
+        text-shadow: 4px 4px 8px #111;
+        letter-spacing: 0.14em;
+        color: #F4B728;
+      }
+
+      .subtitle {
+        font-size: 0.7rem;
+        text-align: center;
+        text-shadow: 2px 2px 4px #111;
+        opacity: 0.9;
+      }
+
+      .subtitle-small {
+        font-size: 0.6rem;
+        text-align: center;
+        opacity: 0.85;
+      }
+
+      /* FILTER BAR */
+
+      .filter-bar {
+        margin-top: 0.9rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+
+      .filter-btn {
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        border: 2px solid #F4B728;
+        background: rgba(0, 0, 0, 0.85);
+        color: #ffffff;
+        font-size: 0.55rem;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        text-shadow: 1px 1px 2px #000;
+        transition: transform 0.1s ease, box-shadow 0.1s ease,
+          background 0.1s ease, color 0.1s ease;
+        white-space: nowrap;
+      }
+
+      .filter-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 8px #F4B728, 0 0 14px rgba(244, 183, 40, 0.7);
+        background: rgba(20, 20, 20, 0.95);
+      }
+
+      .filter-btn.active {
+        background: #F4B728;
+        color: #000;
+        box-shadow: 0 0 10px #F4B728;
+      }
+
+      /* GRID */
+
+      .explore-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      /* CARD + CRT EFFECT */
+
+      .zord-card {
+        position: relative;
+        border-radius: 16px;
+        border: 2px solid #F4B728; /* Zcash gold border */
+        background: rgba(0, 0, 0, 0.9);
+        overflow: hidden;
+        cursor: pointer;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.05),
+          0 0 22px rgba(0, 0, 0, 0.9);
+        transition: transform 0.12s ease, box-shadow 0.12s ease,
+                    border-color 0.12s ease;
+      }
+
+      /* CRT scanlines + vignette */
+      .zord-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(circle at center,
+            transparent 0%,
+            transparent 60%,
+            rgba(0, 0, 0, 0.8) 100%
+          ),
+          repeating-linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.08) 0px,
+            rgba(255, 255, 255, 0.08) 1px,
+            transparent 1px,
+            transparent 3px
+          );
+        mix-blend-mode: soft-light;
+        opacity: 0.18;
+      }
+
+      .zord-card:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 0 16px #F4B728,
+          0 0 32px rgba(244, 183, 40, 0.7);
+        border-color: #F4B728;
+      }
+
+      /* INNER THUMB WITH INSET SHADOW + SHIMMER SUPPORT */
+
+      .zord-thumb {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: #020014;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.9);
+      }
+
+      /* shimmer overlay, only visible when .loading class is present */
+      .zord-thumb::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          120deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.25) 50%,
+          transparent 100%
+        );
+        transform: translateX(-120%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .zord-thumb.loading::before {
+        opacity: 1;
+        animation: zord-shimmer 1.3s linear infinite;
+      }
+
+      @keyframes zord-shimmer {
+        from {
+          transform: translateX(-120%);
+        }
+        to {
+          transform: translateX(120%);
+        }
+      }
+
+      .zord-thumb img {
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+      }
+
+      .zord-thumb iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: #000;
+      }
+
+      .zord-badge {
+        position: absolute;
+        left: 0.6rem;
+        bottom: 0.5rem;
+        padding: 0.2rem 0.45rem;
+        border-radius: 999px;
+        border: 2px solid #F4B728; /* gold outline */
+        background: rgba(0, 0, 0, 0.85);
+        color: #ffffff; /* white text */
+        font-size: 0.5rem;
+        letter-spacing: 0.06em;
+        text-shadow: 1px 1px 2px #000;
+        transition: 0.15s ease;
+      }
+
+      .zord-badge:hover {
+        box-shadow: 0 0 8px #F4B728, 0 0 12px #F4B728;
+        background: rgba(20, 20, 20, 0.95);
+      }
+
+      /* Info button */
+      .zord-info-btn {
+        position: absolute;
+        right: 0.6rem;
+        bottom: 0.5rem;
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        border: 2px solid #F4B728; /* gold outline */
+        background: rgba(0, 0, 0, 0.85);
+        color: #ffffff; /* white i */
+        font-size: 0.65rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        text-shadow: 1px 1px 2px #000;
+        transition: 0.15s ease;
+      }
+
+      .zord-info-btn:hover {
+        background: rgba(20, 20, 20, 0.95);
+        box-shadow: 0 0 8px #F4B728, 0 0 12px #F4B728;
+      }
+
+      .grid-empty {
+        grid-column: 1 / -1;
+        text-align: center;
+        font-size: 0.7rem;
+        opacity: 0.8;
+      }
+
+      .status-line {
+        margin-top: 1rem;
+        font-size: 0.6rem;
+        text-align: center;
+        opacity: 0.85;
+        color: #F4B728;
+      }
+
+      /* FOOTER */
+
+      .footer {
+        margin-top: 1rem;
+        font-size: 0.6rem;
+        text-align: center;
+        text-shadow: 1px 1px 2px #111;
+        opacity: 0.85;
+      }
+
+      /* MODAL */
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1500;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+      }
+
+      .modal-inner {
+        width: min(900px, 95vw);
+        max-height: 90vh;
+        background: #000;
+        border-radius: 18px;
+        border: 2px solid #F4B728;
+        box-shadow: 0 0 24px rgba(0, 0, 0, 0.9);
+        padding: 1rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .modal-title {
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        color: #F4B728;
+      }
+
+      .modal-close {
+        cursor: pointer;
+        font-size: 0.9rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        border: 2px solid #F4B728;
+        background: rgba(0, 0, 0, 0.8);
+        color: #ffffff;
+        text-shadow: 0 0 6px #F4B728, 0 0 12px #F4B728;
+      }
+
+      .modal-close:hover {
+        background: #F4B728;
+        color: #000;
+        box-shadow: 0 0 12px #F4B728;
+      }
+
+      .modal-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem 1.2rem; /* row-gap, column-gap */
+        font-size: 0.6rem;
+        opacity: 0.9;
+        align-items: center;
+      }
+
+      .modal-meta span {
+        white-space: nowrap;
+        display: flex;
+        gap: 0.25rem;
+      }
+      .modal-meta strong {
+        color: #fff;
+      }
+
+      .modal-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .modal-preview {
+        flex: 1;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: #050010;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 77px;
+
+      }
+
+      .modal-preview img {
+        max-width: 100%;
+        max-height: 70vh;
+        display: block;
+      }
+
+      .modal-preview iframe {
+        width: 100%;
+        height: 70vh;
+        border: none;
+        border-radius: 8px;
+        background: #000;
+      }
+
+      .modal-preview pre {
+        width: 100%;
+        max-height: 70vh;
+        overflow: auto;
+        border-radius: 8px;
+        background: #000;
+        padding: 0.5rem;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 0.55rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+        text-align: center;
+      }
+
+      .modal-raw {
+        flex: 1;
+        border-radius: 10px;
+        border: 1px solid #f4b72894;
+        background: #050010;
+        padding: 0.5rem;
+        font-size: 0.55rem;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .modal-footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        margin-top: 0.25rem;
+      }
+
+      .modal-btn {
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        border: 2px solid #F4B728;
+        background: rgba(0, 0, 0, 0.9);
+        color: #fff;
+        font-size: 0.6rem;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        text-shadow: 1px 1px 2px #000;
+      }
+
+      .modal-btn:hover {
+        background: rgba(35, 35, 35, 0.95);
+      }
+
+      @media (max-width: 800px) {
+        .app-container {
+          padding-bottom: 2rem;
+        }
+        .modal-inner {
+          padding: 0.75rem 0.85rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="menuMount"></div>
+
+    <!-- MODAL -->
+    <div id="inscriptionModal" class="modal-overlay">
+      <div class="modal-inner">
+        <div class="modal-header">
+          <div class="modal-title">INSCRIPTION VIEW</div>
+          <button id="modalClose" class="modal-close">X</button>
+        </div>
+        <div class="modal-meta">
+          <span><strong>TXID:</strong> <span id="modalTxid">–</span></span>
+          <span><strong>TYPE:</strong> <span id="modalType">–</span></span>
+          <span><strong>SIZE:</strong> <span id="modalSize">–</span></span>
+        </div>
+
+        <div class="modal-body">
+          <div id="modalPreview" class="modal-preview">
+            <!-- rendered image/html/svg -->
+          </div>
+          <pre id="modalRaw" class="modal-raw" style="display: none;"></pre>
+        </div>
+        <div class="modal-footer">
+          <button id="copyTxidBtn" class="modal-btn">COPY TXID</button>
+          <button id="showRawBtn" class="modal-btn">SHOW RAW</button>
+          <button id="copyImageBtn" class="modal-btn">COPY IMAGE</button>
+          <button id="downloadBtn" class="modal-btn">DOWNLOAD</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-container">
+      <div class="content-card">
+        <div class="hero">
+          <div class="hero-logo-wrap">
+            <div class="round-logo">
+              <img src="/assets/logo.jpg" alt="ZORD Logo" />
+            </div>
+            <div class="site-title-small">ZORDINALS EXPLORER</div>
+          </div>
+
+          <h1 class="main-title">EXPLORE ZORDS</h1>
+          <p class="subtitle">Explore Zimmutable Zords</p>
+          <p class="subtitle-small">Explorer by Zordtoshi</p>
+
+          <!-- FILTER BAR (under "Explorer by Zordtoshi") -->
+          <div class="filter-bar">
+            <button class="filter-btn active" data-filter="ALL">ALL</button>
+            <button class="filter-btn" data-filter="PNG">PNG</button>
+            <button class="filter-btn" data-filter="SVG">SVG</button>
+            <button class="filter-btn" data-filter="WEBP">WEBP</button>
+            <button class="filter-btn" data-filter="JPEG">JPEG</button>
+            <button class="filter-btn" data-filter="HTML">HTML</button>
+            <button class="filter-btn" data-filter="JSON">JSON</button>
+            <button class="filter-btn" data-filter="GIF">GIF</button>
+            <button class="filter-btn" data-filter="VIDEO">VIDEO</button>
+            <button class="filter-btn" data-filter="AUDIO">AUDIO</button>
+            <button class="filter-btn" data-filter="OTHER">OTHER</button>
+          </div>
+        </div>
+
+        <div id="zordGrid" class="explore-grid">
+          <!-- cards injected here -->
+        </div>
+
+        <div class="status-line" id="loadedCount">Loaded 0 inscriptions.</div>
+        <div class="status-line" id="statusText"></div>
+
+        <div class="footer">
+          © <span id="yearSpan"></span> Zord.cash • Zimmutable Zords
+        </div>
+      </div>
+    </div>
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      async function ensureJsonOverlayHelpersLoaded() {
+        if (window.ZORD_JSONCSS && window.ZORD_JSONCSS.buildJsonOverlay) {
+          return;
+        }
+        try {
+          const res = await fetch('/assets-page/jsoncss.html', { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const html = await res.text();
+
+          const tmp = document.createElement('div');
+          tmp.innerHTML = html;
+
+          const styleEl = tmp.querySelector('style');
+          if (styleEl) {
+            document.head.appendChild(styleEl.cloneNode(true));
+          }
+
+          const scriptEl = tmp.querySelector('script');
+          if (scriptEl) {
+            const s = document.createElement('script');
+            s.textContent = scriptEl.textContent;
+            document.head.appendChild(s);
+          }
+        } catch (e) {
+          console.error('Failed to load jsoncss helpers', e);
+        }
+      }
+
+
+      // ------------------------ MENU LOADER ------------------------
+      async function loadMenu() {
+        try {
+          const res = await fetch('/assets-page/menu.html', { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const html = await res.text();
+
+          const mount = document.getElementById('menuMount') || document.body;
+          mount.insertAdjacentHTML('afterbegin', html);
+
+          setupMenu();
+        } catch (err) {
+          console.error('Failed to load shared menu:', err);
+        }
+      }
+
+      function setupMenu() {
+        const menuButton = $('menuButton');
+        const overlay = $('sidebarOverlay');
+        const closeBtn = $('sidebarClose');
+        if (!menuButton || !overlay || !closeBtn) return;
+
+        const close = () => overlay.classList.remove('active');
+        menuButton.addEventListener('click', () => overlay.classList.add('active'));
+        closeBtn.addEventListener('click', close);
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) close();
+        });
+      }
+
+      // ------------------------ FILTER SYSTEM ------------------------
+
+      /** Map file extensions → filter groups */
+      const extToFilter = {
+        png: "PNG",
+        jpg: "JPEG",
+        jpeg: "JPEG",
+        webp: "WEBP",
+        gif: "GIF",
+        svg: "SVG",
+        html: "HTML",
+        htm: "HTML",
+        json: "JSON",
+
+        mp4: "VIDEO",
+        webm: "VIDEO",
+        mov: "VIDEO",
+
+        mp3: "AUDIO",
+        wav: "AUDIO",
+        ogg: "AUDIO",
+      };
+
+      let activeFilter = "ALL";
+      let zords = [];
+
+      function applyFilter() {
+        const grid = $('zordGrid');
+        grid.innerHTML = "";
+
+        let shown = zords;
+
+        if (activeFilter !== "ALL") {
+          shown = zords.filter((item) => {
+            const ext = (item.ext || "").toLowerCase();
+            const mapped = extToFilter[ext] || "OTHER";
+            return mapped === activeFilter;
+          });
+        }
+
+        if (!shown.length) {
+          grid.innerHTML = `<div class="grid-empty">No ${activeFilter} inscriptions found.</div>`;
+          $('loadedCount').textContent = `Loaded ${shown.length} inscriptions.`;
+          return;
+        }
+
+        shown.forEach((item) => {
+          const card = document.createElement('div');
+          card.className = 'zord-card';
+
+          const preview = document.createElement('div');
+          preview.className = 'zord-thumb';
+          renderCardPreview(preview, item);
+
+          const badge = document.createElement('div');
+          badge.className = 'zord-badge';
+          badge.textContent = shortHash(item.inscriptionId || item.txid, 6, 4);
+
+          const infoBtn = document.createElement('button');
+          infoBtn.className = 'zord-info-btn';
+          infoBtn.innerHTML = "i";
+
+          infoBtn.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            openModal(item);
+          });
+
+          card.appendChild(preview);
+          card.appendChild(badge);
+          card.appendChild(infoBtn);
+
+          card.addEventListener("click", () => openModal(item));
+
+          grid.appendChild(card);
+        });
+
+        $('loadedCount').textContent = `Loaded ${shown.length} inscriptions.`;
+      }
+
+      function setupFilterButtons() {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            activeFilter = btn.dataset.filter;
+            applyFilter();
+          });
+        });
+      }
+
+      // ------------------------ GRID + PREVIEW ------------------------
+
+      function shortHash(str, front = 6, back = 6) {
+        if (!str || typeof str !== "string") return "—";
+        if (str.length <= front + back + 3) return str;
+        return str.slice(0, front) + "…" + str.slice(-back);
+      }
+
+      function renderCardPreview(container, item) {
+        container.innerHTML = "";
+        container.classList.add("loading");
+
+        const ct = (item.mimeType || item.contentType || "").toLowerCase();
+        const ext = (item.ext || "").toLowerCase();
+        const url = item.url;
+
+        if (!url) {
+          container.classList.remove("loading");
+          const span = document.createElement("span");
+          span.textContent = "No preview.";
+          span.style.fontSize = "0.6rem";
+          span.style.opacity = "0.7";
+          container.appendChild(span);
+          return;
+        }
+
+        const isJson = ct.includes("application/json") || ext === "json";
+        const isHtml =
+          ct === "text/html" || ext === "html" || ext === "htm";
+        const isText =
+          ((ct.startsWith("text/") && !isHtml) || ext === "txt");
+
+        // JSON → overlay card using shared helper
+        if (isJson) {
+          (async () => {
+            try {
+              await ensureJsonOverlayHelpersLoaded();
+              const res = await fetch(url, { cache: "no-store" });
+              const text = await res.text();
+
+              container.classList.remove("loading");
+              container.innerHTML = "";
+
+              if (window.ZORD_JSONCSS && window.ZORD_JSONCSS.buildJsonOverlay) {
+                const overlay = window.ZORD_JSONCSS.buildJsonOverlay(text, {
+                  variant: "card",
+                });
+                container.appendChild(overlay);
+              } else {
+                const pre = document.createElement("pre");
+                pre.style.fontSize = "0.45rem";
+                pre.style.color = "#b5ffcf";
+                pre.style.padding = "0.4rem";
+                pre.style.whiteSpace = "pre-wrap";
+                pre.style.wordBreak = "break-word";
+                const snippet =
+                  text.length > 200 ? text.slice(0, 200) + "…" : text;
+                pre.textContent = snippet;
+                container.appendChild(pre);
+              }
+            } catch (e) {
+              container.classList.remove("loading");
+              container.innerHTML = "";
+              const pre = document.createElement("pre");
+              pre.style.fontSize = "0.45rem";
+              pre.style.color = "#b5ffcf";
+              pre.style.padding = "0.4rem";
+              pre.style.whiteSpace = "pre-wrap";
+              pre.style.wordBreak = "break-word";
+              pre.textContent = "// failed to load json";
+              container.appendChild(pre);
+            }
+          })();
+          return;
+        }
+
+        // Plain text inscriptions → snippet
+        if (isText) {
+          const pre = document.createElement("pre");
+          pre.style.fontSize = "0.5rem";
+          pre.style.whiteSpace = "pre-wrap";
+          pre.style.wordBreak = "break-word";
+          pre.textContent = "// loading text…";
+          container.appendChild(pre);
+
+          (async () => {
+            try {
+              const res = await fetch(url, { cache: "no-store" });
+              const text = await res.text();
+              const snippet =
+                text.length > 200 ? text.slice(0, 200) + "…" : text;
+              pre.textContent = snippet;
+            } catch (e) {
+              pre.textContent = "// failed to load text";
+            } finally {
+              container.classList.remove("loading");
+            }
+          })();
+          return;
+        }
+
+        // Normal images (non-SVG)
+        if (ct.startsWith("image/") && !ct.includes("svg")) {
+          const img = new Image();
+          img.src = url;
+          img.onload = () => container.classList.remove("loading");
+          img.onerror = () => container.classList.remove("loading");
+          container.appendChild(img);
+          return;
+        }
+
+        // HTML, SVG, other → iframe (HTML will execute here)
+        const iframe = document.createElement("iframe");
+        iframe.src = url;
+        iframe.setAttribute("loading", "lazy");
+        iframe.addEventListener("load", () => container.classList.remove("loading"));
+        iframe.addEventListener("error", () => container.classList.remove("loading"));
+        container.appendChild(iframe);
+      }
+
+
+
+      async function loadZords() {
+        try {
+          $('statusText').textContent = "Loading inscriptions from /content…";
+          const res = await fetch("/api/zords/list", { cache: "no-store" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          const data = await res.json();
+
+          zords = Array.isArray(data) ? data : [];
+          $('statusText').textContent = "";
+          applyFilter();
+        } catch (e) {
+          console.error(e);
+          $('statusText').textContent = "Failed to load inscriptions.";
+        }
+      }
+
+      // ------------------------ MODAL ------------------------
+
+      let currentItem = null;
+      let modalShowingRaw = false;
+      let modalRawCache = null;
+
+      function openModal(item) {
+        currentItem = item;
+        modalShowingRaw = false;
+        modalRawCache = null;
+
+        $('modalTxid').textContent = item.inscriptionId || item.txid || "—";
+        $('modalType').textContent = item.mimeType || item.contentType || "unknown";
+        $('modalSize').textContent = item.size ? `${item.size} B` : "—";
+
+        renderModalPreview(item);
+
+        $('inscriptionModal').classList.add('active');
+      }
+
+      function closeModal() {
+        $('inscriptionModal').classList.remove('active');
+        currentItem = null;
+        modalShowingRaw = false;
+        modalRawCache = null;
+      }
+      function renderModalPreview(item) {
+        const preview = $('modalPreview');
+        const raw = $('modalRaw');
+        const btn = $('showRawBtn');
+
+        preview.innerHTML = "";
+        const ct = (item.mimeType || item.contentType || "").toLowerCase();
+        const ext = (item.ext || "").toLowerCase();
+        const url = item.url;
+
+        const isJson = ct.includes("application/json") || ext === "json";
+        const isHtml =
+          ct === "text/html" || ext === "html" || ext === "htm";
+        const isText =
+          ((ct.startsWith("text/") && !isHtml) || ext === "txt");
+
+        if (isJson) {
+          // JSON → overlay in preview, RAW via button
+          preview.style.display = "flex";
+          raw.style.display = "none";
+          modalShowingRaw = false;
+          if (btn) btn.textContent = "SHOW RAW";
+
+          (async () => {
+            try {
+              await ensureJsonOverlayHelpersLoaded();
+              const res = await fetch(url, { cache: "no-store" });
+              const text = await res.text();
+              modalRawCache = text;
+
+              preview.innerHTML = "";
+              if (window.ZORD_JSONCSS && window.ZORD_JSONCSS.buildJsonOverlay) {
+                const overlay = window.ZORD_JSONCSS.buildJsonOverlay(text, {
+                  variant: "full",
+                });
+                preview.appendChild(overlay);
+              } else {
+                const pre = document.createElement("pre");
+                pre.style.fontSize = "0.55rem";
+                pre.style.whiteSpace = "pre-wrap";
+                pre.style.wordBreak = "break-word";
+                pre.textContent = text;
+                preview.appendChild(pre);
+              }
+            } catch (e) {
+              preview.innerHTML = "";
+              const pre = document.createElement("pre");
+              pre.style.fontSize = "0.55rem";
+              pre.textContent = "// failed to load json\n" + e.message;
+              preview.appendChild(pre);
+            }
+          })();
+          return;
+        }
+
+        // Plain text → show text in preview
+        if (isText) {
+          raw.style.display = "none";
+          preview.style.display = "flex";
+          modalShowingRaw = false;
+          if (btn) btn.textContent = "SHOW RAW";
+
+          if (!url) {
+            preview.textContent = "No preview.";
+            return;
+          }
+
+          const pre = document.createElement("pre");
+          pre.textContent = "// loading text…";
+          preview.appendChild(pre);
+
+          (async () => {
+            try {
+              const res = await fetch(url, { cache: "no-store" });
+              const text = await res.text();
+              pre.textContent = text;
+              modalRawCache = text; // RAW toggle is instant
+            } catch (e) {
+              pre.textContent = "// failed to load text\n" + e.message;
+            }
+          })();
+          return;
+        }
+
+        // HTML, images, other → normal preview (iframe / img)
+        raw.style.display = "none";
+        preview.style.display = "flex";
+        modalShowingRaw = false;
+        if (btn) btn.textContent = "SHOW RAW";
+
+        if (!url) {
+          preview.textContent = "No preview.";
+          return;
+        }
+
+        if (ct.startsWith("image/") && !ct.includes("svg")) {
+          const img = new Image();
+          img.src = url;
+          img.style.maxWidth = "100%";
+          img.style.maxHeight = "70vh";
+          preview.appendChild(img);
+          return;
+        }
+
+        const iframe = document.createElement("iframe");
+        iframe.src = url;
+        iframe.style.width = "100%";
+        iframe.style.height = "70vh";
+        iframe.style.border = "none";
+        preview.appendChild(iframe);
+      }
+
+
+
+      async function showModalRaw() {
+        if (!currentItem) return;
+
+        const preview = $('modalPreview');
+        const raw = $('modalRaw');
+        const btn = $('showRawBtn');
+        const ct = (currentItem.mimeType || currentItem.contentType || "").toLowerCase();
+        const ext = (currentItem.ext || "").toLowerCase();
+        const isJson = ct.includes("application/json") || ext === "json";
+
+        if (!modalShowingRaw) {
+          if (!modalRawCache) {
+            try {
+              const res = await fetch(currentItem.url, { cache: "no-store" });
+              modalRawCache = await res.text();
+            } catch (e) {
+              modalRawCache = "// failed to load\n" + e.message;
+            }
+          }
+
+          raw.textContent = modalRawCache;
+          preview.style.display = "none";
+          raw.style.display = "block";
+          btn.textContent = "SHOW PREVIEW";
+          modalShowingRaw = true;
+        } else {
+          renderModalPreview(currentItem);
+          btn.textContent = "SHOW RAW";
+          modalShowingRaw = false;
+        }
+      }
+
+      // ------------------------ CLIPBOARD + DOWNLOAD ------------------------
+
+      async function copyTxid() {
+        if (!currentItem) return;
+        await navigator.clipboard.writeText(currentItem.inscriptionId || currentItem.txid);
+        $('statusText').textContent = "TXID copied.";
+      }
+
+      async function copyImageUrl() {
+        if (!currentItem) return;
+        await navigator.clipboard.writeText(window.location.origin + currentItem.url);
+        $('statusText').textContent = "URL copied.";
+      }
+
+      function downloadCurrent() {
+        if (!currentItem) return;
+        const a = document.createElement("a");
+        a.href = currentItem.url;
+        a.download = currentItem.filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
+      // ------------------------- INIT -------------------------
+
+      document.addEventListener("DOMContentLoaded", () => {
+        $('yearSpan').textContent = new Date().getFullYear();
+
+        loadMenu();
+        setupFilterButtons();
+        loadZords();
+
+        $('modalClose').addEventListener("click", closeModal);
+
+        $('inscriptionModal').addEventListener("click", (e) => {
+          if (e.target.id === "inscriptionModal") closeModal();
+        });
+
+        $('copyTxidBtn').addEventListener("click", copyTxid);
+        $('copyImageBtn').addEventListener("click", copyImageUrl);
+        $('downloadBtn').addEventListener("click", downloadCurrent);
+        $('showRawBtn').addEventListener("click", showModalRaw);
+      });
+    </script>
+  </body>
+</html>
+

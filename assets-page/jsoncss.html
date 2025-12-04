@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    .json-overlay {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      border: 2px solid #f4b728;
+      background: radial-gradient(circle at top, #1a1030 0%, #050008 55%, #000 100%);
+      color: #fff;
+      font-family: "Press Start 2P", monospace;
+      box-shadow: 0 0 14px rgba(0, 0, 0, 0.85);
+      padding: 0.6rem 0.7rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .json-overlay--card {
+      font-size: 0.75rem;
+      padding: 0.75rem 0.8rem;
+    }
+
+    .json-overlay--full {
+      font-size: 0.55rem;
+      padding: 0.7rem 0.85rem;
+    }
+
+    .json-overlay-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.3rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .json-overlay-pill {
+      padding: 0.3rem 0.55rem;
+      border-radius: 999px;
+      border: 2px solid #f4b728;
+      background: rgba(0, 0, 0, 0.8);
+      font-size: 1em;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .json-overlay-op {
+      font-size: 1em;
+      opacity: 0.9;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .json-overlay-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .json-overlay-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      align-items: baseline;
+    }
+
+    .json-overlay-label {
+      font-size: 0.7em;
+      opacity: 0.95;
+    }
+
+    .json-overlay-value {
+      font-size: 1.1em;
+      color: #f4b728;
+    }
+
+    .json-overlay-footer {
+      margin-top: 0.4rem;
+      font-size: 0.6em;
+      opacity: 0.85;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .json-overlay-tag {
+      padding: 0.1rem 0.35rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    /* COLOURS PER TYPE */
+
+    /* ZRC-20 base */
+    .json-overlay--zrc20 {
+      border-color: #f4b728;
+      box-shadow: 0 0 14px rgba(244, 183, 40, 0.45);
+    }
+
+    /* deploy = "gold / orange" */
+    .json-overlay--zrc20-deploy {
+      background: radial-gradient(circle at top, #3b2500 0%, #120800 55%, #000 100%);
+    }
+
+    /* mint = "green" */
+    .json-overlay--zrc20-mint {
+      border-color: #37ff7f;
+      box-shadow: 0 0 14px rgba(55, 255, 127, 0.45);
+      background: radial-gradient(circle at top, #07381c 0%, #03110a 55%, #000 100%);
+    }
+
+    /* transfer = "blue" */
+    .json-overlay--zrc20-transfer {
+      border-color: #60a5fa;
+      box-shadow: 0 0 14px rgba(96, 165, 250, 0.45);
+      background: radial-gradient(circle at top, #071836 0%, #020714 55%, #000 100%);
+    }
+
+    /* non-Zord / off-chain */
+    .json-overlay--not-zord {
+      border-color: #ff6b6b;
+      box-shadow: 0 0 16px rgba(255, 107, 107, 0.55);
+      background: radial-gradient(circle at top, #3d0202 0%, #120000 55%, #000 100%);
+    }
+
+    .json-overlay--not-zord .json-overlay-value {
+      color: #ffb4b4;
+    }
+
+    /* generic JSON */
+    .json-overlay--generic {
+      border-color: #9ca3af;
+      box-shadow: 0 0 12px rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top, #111827 0%, #020617 55%, #000 100%);
+    }
+
+    .json-overlay-generic-body {
+      font-size: 0.75em;
+      line-height: 1.5;
+      opacity: 0.9;
+      max-height: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+<body>
+<script>
+  (function () {
+    function safeParseJson(text) {
+      try {
+        return JSON.parse(text);
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function normaliseLower(v) {
+      return (v == null ? '' : String(v)).toLowerCase();
+    }
+
+    function detectJsonKind(obj) {
+      if (!obj || typeof obj !== 'object') {
+        return { kind: 'generic' };
+      }
+
+      const p = normaliseLower(obj.p || obj.protocol);
+      const op = normaliseLower(obj.op);
+      const joined = JSON.stringify(obj).toLowerCase();
+
+      // Non-Zord cases
+      if (p === 'zrc-721') {
+        return {
+          kind: 'not-zord',
+          reason: 'zrc-721',
+          p,
+          op,
+        };
+      }
+      if (joined.includes('"proto":"ipfs"') || joined.includes('"proto": "ipfs"') || joined.includes('ipfs')) {
+        return {
+          kind: 'not-zord',
+          reason: 'ipfs',
+          p,
+          op,
+        };
+      }
+
+      // ZRC-20
+      if (p === 'zrc-20') {
+        return {
+          kind: 'zrc-20',
+          op,
+          p,
+        };
+      }
+
+      return { kind: 'generic', p, op };
+    }
+
+    function createBaseOverlay(variant) {
+      const root = document.createElement('div');
+      root.className =
+        'json-overlay ' +
+        (variant === 'card' ? 'json-overlay--card' : 'json-overlay--full');
+
+      const header = document.createElement('div');
+      header.className = 'json-overlay-header';
+
+      const main = document.createElement('div');
+      main.className = 'json-overlay-main';
+
+      const footer = document.createElement('div');
+      footer.className = 'json-overlay-footer';
+
+      root.appendChild(header);
+      root.appendChild(main);
+      root.appendChild(footer);
+
+      return { root, header, main, footer };
+    }
+
+    function buildZrc20Overlay(obj, kindInfo, options) {
+      const variant = options && options.variant === 'card' ? 'card' : 'full';
+      const { root, header, main, footer } = createBaseOverlay(variant);
+      root.classList.add('json-overlay--zrc20');
+
+      const op = kindInfo.op || '';
+      const opClass =
+        op === 'deploy'
+          ? 'json-overlay--zrc20-deploy'
+          : op === 'mint'
+          ? 'json-overlay--zrc20-mint'
+          : 'json-overlay--zrc20-transfer';
+      root.classList.add(opClass);
+
+      const pill = document.createElement('div');
+      pill.className = 'json-overlay-pill';
+      pill.textContent = 'ZRC-20 ' + (op || '').toUpperCase();
+
+      const opSpan = document.createElement('div');
+      opSpan.className = 'json-overlay-op';
+      opSpan.textContent = (obj.tick || 'UNKNOWN').toString();
+
+      header.appendChild(pill);
+      header.appendChild(opSpan);
+
+      // main rows
+      const row1 = document.createElement('div');
+      row1.className = 'json-overlay-row';
+      const label1 = document.createElement('span');
+      label1.className = 'json-overlay-label';
+      label1.textContent = 'TOKEN';
+      const value1 = document.createElement('span');
+      value1.className = 'json-overlay-value';
+      value1.textContent = obj.tick || 'UNKNOWN';
+      row1.appendChild(label1);
+      row1.appendChild(value1);
+      main.appendChild(row1);
+
+      if (op === 'deploy') {
+        const rowMax = document.createElement('div');
+        rowMax.className = 'json-overlay-row';
+        const lMax = document.createElement('span');
+        lMax.className = 'json-overlay-label';
+        lMax.textContent = 'MAX SUPPLY';
+        const vMax = document.createElement('span');
+        vMax.className = 'json-overlay-value';
+        vMax.textContent = obj.max || '—';
+        rowMax.appendChild(lMax);
+        rowMax.appendChild(vMax);
+        main.appendChild(rowMax);
+
+        const rowLim = document.createElement('div');
+        rowLim.className = 'json-overlay-row';
+        const lLim = document.createElement('span');
+        lLim.className = 'json-overlay-label';
+        lLim.textContent = 'MINT LIMIT';
+        const vLim = document.createElement('span');
+        vLim.className = 'json-overlay-value';
+        vLim.textContent = obj.lim || '—';
+        rowLim.appendChild(lLim);
+        rowLim.appendChild(vLim);
+        main.appendChild(rowLim);
+      } else {
+        const rowAmt = document.createElement('div');
+        rowAmt.className = 'json-overlay-row';
+        const lAmt = document.createElement('span');
+        lAmt.className = 'json-overlay-label';
+        lAmt.textContent = 'AMOUNT';
+        const vAmt = document.createElement('span');
+        vAmt.className = 'json-overlay-value';
+        vAmt.textContent = obj.amt || '—';
+        rowAmt.appendChild(lAmt);
+        rowAmt.appendChild(vAmt);
+        main.appendChild(rowAmt);
+      }
+
+      const tagLeft = document.createElement('div');
+      tagLeft.className = 'json-overlay-tag';
+      tagLeft.textContent = 'ON-CHAIN ZRC-20';
+
+      const tagRight = document.createElement('div');
+      tagRight.className = 'json-overlay-tag';
+      tagRight.textContent = (op || '').toUpperCase() || 'UNKNOWN';
+
+      footer.appendChild(tagLeft);
+      footer.appendChild(tagRight);
+
+      return root;
+    }
+
+    function buildNotZordOverlay(obj, kindInfo, options) {
+      const variant = options && options.variant === 'card' ? 'card' : 'full';
+      const { root, header, main, footer } = createBaseOverlay(variant);
+      root.classList.add('json-overlay--not-zord');
+
+      const pill = document.createElement('div');
+      pill.className = 'json-overlay-pill';
+      pill.textContent = 'NOT A ZORDINAL';
+
+      const why = document.createElement('div');
+      why.className = 'json-overlay-op';
+      if (kindInfo.reason === 'zrc-721') {
+        why.textContent = 'ZRC-721 OFF-CHAIN NFT';
+      } else if (kindInfo.reason === 'ipfs') {
+        why.textContent = 'IPFS / OFF-CHAIN CONTENT';
+      } else {
+        why.textContent = 'OFF-CHAIN NFT / OTHER';
+      }
+
+      header.appendChild(pill);
+      header.appendChild(why);
+
+      const row1 = document.createElement('div');
+      row1.className = 'json-overlay-row';
+      const l1 = document.createElement('span');
+      l1.className = 'json-overlay-label';
+      l1.textContent = 'PROTO';
+      const v1 = document.createElement('span');
+      v1.className = 'json-overlay-value';
+      v1.textContent = (obj.p || obj.proto || obj.protocol || 'unknown').toString();
+      row1.appendChild(l1);
+      row1.appendChild(v1);
+      main.appendChild(row1);
+
+      if (obj.collection) {
+        const row2 = document.createElement('div');
+        row2.className = 'json-overlay-row';
+        const l2 = document.createElement('span');
+        l2.className = 'json-overlay-label';
+        l2.textContent = 'COLLECTION';
+        const v2 = document.createElement('span');
+        v2.className = 'json-overlay-value';
+        v2.textContent = obj.collection.toString();
+        row2.appendChild(l2);
+        row2.appendChild(v2);
+        main.appendChild(row2);
+      } else if (obj.type) {
+        const row2 = document.createElement('div');
+        row2.className = 'json-overlay-row';
+        const l2 = document.createElement('span');
+        l2.className = 'json-overlay-label';
+        l2.textContent = 'TYPE';
+        const v2 = document.createElement('span');
+        v2.className = 'json-overlay-value';
+        v2.textContent = obj.type.toString();
+        row2.appendChild(l2);
+        row2.appendChild(v2);
+        main.appendChild(row2);
+      }
+
+      const tagLeft = document.createElement('div');
+      tagLeft.className = 'json-overlay-tag';
+      tagLeft.textContent = 'OFF-CHAIN REFERENCE';
+
+      const tagRight = document.createElement('div');
+      tagRight.className = 'json-overlay-tag';
+      tagRight.textContent = (obj.id || obj.tokenId || 'NO-ID').toString();
+
+      footer.appendChild(tagLeft);
+      footer.appendChild(tagRight);
+
+      return root;
+    }
+
+    function buildGenericOverlay(obj, options) {
+      const variant = options && options.variant === 'card' ? 'card' : 'full';
+      const { root, header, main, footer } = createBaseOverlay(variant);
+      root.classList.add('json-overlay--generic');
+
+      const pill = document.createElement('div');
+      pill.className = 'json-overlay-pill';
+      pill.textContent = 'JSON CONTENT';
+
+      const opSpan = document.createElement('div');
+      opSpan.className = 'json-overlay-op';
+      const proto = (obj && (obj.p || obj.proto || obj.protocol)) || 'generic';
+      opSpan.textContent = String(proto).toUpperCase();
+
+      header.appendChild(pill);
+      header.appendChild(opSpan);
+
+      const body = document.createElement('div');
+      body.className = 'json-overlay-generic-body';
+
+      try {
+        const pretty = JSON.stringify(obj, null, 2);
+        const limit = variant === 'card' ? 220 : 900;
+        body.textContent =
+          pretty.length > limit ? pretty.slice(0, limit) + '…' : pretty;
+      } catch (e) {
+        body.textContent = '[unserializable JSON]';
+      }
+
+      main.appendChild(body);
+
+      const tagLeft = document.createElement('div');
+      tagLeft.className = 'json-overlay-tag';
+      tagLeft.textContent = 'ON-CHAIN DATA';
+
+      footer.appendChild(tagLeft);
+
+      return root;
+    }
+
+    function buildJsonOverlayFromObject(obj, options) {
+      const kindInfo = detectJsonKind(obj);
+      if (kindInfo.kind === 'zrc-20') {
+        return buildZrc20Overlay(obj, kindInfo, options || {});
+      }
+      if (kindInfo.kind === 'not-zord') {
+        return buildNotZordOverlay(obj, kindInfo, options || {});
+      }
+      return buildGenericOverlay(obj || {}, options || {});
+    }
+
+    function buildJsonOverlay(textOrObj, options) {
+      let obj = textOrObj;
+      if (typeof textOrObj === 'string') {
+        obj = safeParseJson(textOrObj);
+      }
+      if (!obj || typeof obj !== 'object') {
+        // not JSON we understand, return a generic overlay with raw string
+        const fake = { raw: String(textOrObj).slice(0, 1000) };
+        return buildGenericOverlay(fake, options || {});
+      }
+      return buildJsonOverlayFromObject(obj, options || {});
+    }
+
+    window.ZORD_JSONCSS = {
+      buildJsonOverlay,
+      buildJsonOverlayFromObject,
+    };
+  })();
+</script>
+</body>
+</html>

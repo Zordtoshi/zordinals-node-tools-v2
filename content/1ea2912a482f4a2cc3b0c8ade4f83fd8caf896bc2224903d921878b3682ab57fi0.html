@@ -1,0 +1,19 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>ZordApe #000</title>
+<style>body{margin:0;background:#003;overflow:hidden}</style></head><body>
+<svg id="z" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"></svg>
+<script>
+const u=[
+  "/content/01a41c2546b829975f9d1835a683b5b2c1784fed59fdf5ff661e4bffd7a99232i0",
+  "/content/4730374d898e5054c024413672bc0747e0fb03904874c65dbdafb3ba5e9d24d3i0",
+  "/content/fc311944abd447f8018ef8d2e1fba95c895de11815b3bf698bcf2734e8c8e905i0",
+  "/content/a6e56e37dfb4dd7f049f83a17d0ef5b9309084192e2cfae911910547381e2b64i0"
+];
+(async()=>{let s='';for(const x of u){
+  try{const r=await fetch(x,{cache:"no-store"});
+  const t=await r.text();
+  const g=t.match(/<g[^>]*>[\s\S]*?<\/g>/gi)||[];
+  s+=g.join('');}catch(e){}
+}
+document.getElementById('z').innerHTML=s;
+})();
+</script></body></html>
