@@ -58,10 +58,6 @@ The main inscription viewer.
 - **SVG** (inline or HTML-wrapped)  
 - **TXT / Markdown** rendered as text  
 - **JSON** with auto‑overlay:
-  - ZRC‑20 (deploy / mint / transfer)  
-  - ZRC‑721 (flagged as *not* a Zord)  
-  - IPFS‑based (flagged as off‑chain)  
-  - Generic JSON fallback  
 
 ### Viewer Tools  
 - **Fullscreen mode**  
@@ -93,9 +89,6 @@ A modern gallery-style explorer for the entire `/content` directory.
   - DOWNLOAD  
   - SHOW RAW  
 
-### Filter Bar  
-`ALL / PNG / SVG / WEBP / JPEG / HTML / JSON / GIF / VIDEO / AUDIO / OTHER`
-
 ---
 
 ## 🧬 3. Metadata Tools (`assets-page/meta.html`)
@@ -107,21 +100,7 @@ A full metadata workshop used for building and repairing collections.
 - Define:
   - Collection name  
   - Description  
-  - External URL  
-  - Supply / ID range  
-- Generates:
-  - `<id>.json` files in `content/`  
-  - `master.json` in `content/master/`  
-
-Uses a clean, Zord‑friendly schema:
-```json
-{
-  "name": "My Zord #1",
-  "description": "On-chain Zord.",
-  "image_inscription": "txid..i0",
-  "attributes": { ... }
-}
-```
+  - Supply / ID range   
 
 #### **B. ADVANCED MODE – Edit or repair**
 - Load JSON from file or paste in  
@@ -280,7 +259,7 @@ Deep-dive into:
 ├─ content/               # All local Zords
 │  ├─ <id>.png/.html/.json
 │  ├─ rawdata/<id>.json   # inspect.js cache
-│  └─ master/master.json  # Metadata Tools output
+│  └─ master/master.json  # masterlog of inscriptions decoded and in /content 
 │
 └─ assets-page/           # All frontend pages
    ├─ index.html          # Zordinals Viewer
@@ -290,7 +269,7 @@ Deep-dive into:
    ├─ znode-status.html   # Dashboard
    ├─ dev-cli.html        # CLI GUI
    ├─ info.html           # Info page
-   └─ zordinals-theory.html
+   └─ zordinals-theory.html #Zordinals Theory
 ```
 
 ---
@@ -378,3 +357,4 @@ t1J5WgQtT3zetUjCsxknsBxMZQexMUAT9PL
 ```
 
 More tools coming soon.
+
